@@ -1,0 +1,67 @@
+.address-body-info button {
+  width: 80%;
+}
+.new-address {
+  justify-content: center;
+  display: flex;
+}
+.total-title {
+  font-style: italic;
+  align-items: center;
+  display: flex;
+}
+
+.payment-title {
+  font-weight: 700;
+}
+
+.final-price p {
+  font-size: 30px;
+  font-weight: 700;
+  align-items: center;
+  display: contents;
+}
+.final-price {
+  justify-content: flex-end;
+  display: flex;
+  padding-right: 35px;
+}
+
+.total-price span {
+  justify-content: center;
+  display: flex;
+}
+.confirm-info p {
+  font-weight: 700;
+}
+
+.confirm-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.info-item p {
+  margin-right: 10px;
+}
+
+.address {
+  margin-top: 120px;
+}
+.input-phone{
+  width:100%
+}
+
+.input-phone input{
+  height: 55px;
+  width: 100%
+}
+.error-text{
+  color: red;
+  font-style: italic;
+  font-size: 15px;
+}

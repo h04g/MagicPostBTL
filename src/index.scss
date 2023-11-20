@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-primary text-primary;
+  }
+}
+
+.body {
+  margin-top: 50px;
+}
+
+nav {
+  width: 100%;
+}
+.app-container {
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 33.33%;
+
+    button {
+      margin-top: 10px;
+      width: 100%;
+    }
+    input {
+      margin-top: 10px;
+    }
+  }
+  .title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 23px;
+    padding-top: 30px;
+  }
+  .text {
+    font-weight: 600;
+    padding-bottom: 5px;
+  }
+  input {
+    padding: 10px 5px;
+    outline: none;
+    border: #1618230f;
+
+    border-radius: 3px;
+    width: 100%;
+    &:hover {
+      background-color: #dededede;
+      border: none;
+    }
+  }
+  .input-2 {
+    position: relative;
+    i {
+      cursor: pointer;
+      position: absolute;
+      top: 15px;
+      right: 10px;
+    }
+  }
+  button {
+    padding: 10px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+
+    &.active {
+      background-color: #fe2c55;
+      color: white;
+    }
+  }
+
+  button[disabled='disabled'],
+  button:disabled {
+    cursor: not-allowed;
+  }
+  .back {
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+}
+.bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 34 34 / var(--tw-bg-opacity));
+}
+.find-item {
+  width: 70%;
+}
+
+.auth-page footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.admin-body {
+  // margin-top: 100px;
+  // margin-bottom: 50px;
+  margin: 100px 40px 40px 40px;
+}
+.table {
+  margin-top: 20px;
+}
+.update-modal {
+  width: 200px;
+}
+.action {
+  display: flex;
+  justify-content: space-between;
+}
+.order {
+  margin-top: 100px;
+}
+.auth {
+  margin-left: auto;
+}
+
+.clicked-button {
+  background-color: #ff0000;
+}

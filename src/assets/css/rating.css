@@ -1,0 +1,35 @@
+.avatar-cmt {
+    display: flex;
+    justify-content: center;
+}
+.each-cmt {
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+}
+.rating {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+.strike-through-2{
+    font-size: 13px;
+}
+
+.user-name{
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.error {
+    border-color: red;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.cmt-rate textarea {
+    border: 2px solid black;
+}
