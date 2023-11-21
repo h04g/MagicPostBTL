@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+  database:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: magicpost_database
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-magic_post_password}
+      MYSQL_USER: ${MYSQL_USER:-magic_post_username}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-magic_post_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-magic_post}
+    ports:
+      - "${MYSQL_HOST:-127.0.0.1}:${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
