@@ -41,6 +41,17 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+/**
+ * Add associations below this comment
+ * 
+ * Example:
+ * 
+ * db.table_A.hasMany(db.table_B, {
+ *    foreignKey: 'id_A'
+ *  });
+ *  db.table_B.belongsTo(db.table_A);
+ */
+
 const connectDatabase = () => {
   sequelize.authenticate()
     .then(() => console.log('Connection has been established successfully.'))
