@@ -52,6 +52,39 @@ db.Sequelize = Sequelize;
  *  db.table_B.belongsTo(db.table_A);
  */
 
+db.branch.hasMany(db.users, {
+  foreignKey: 'branch_id'
+});
+
+db.branch.hasMany(db.shipping_orders, {
+  foreignKey: "sender_postal_id",
+});
+
+db.branch.hasMany(db.transport, {
+  foreignKey: "receiving_branch_id",
+});
+
+db.branch.hasMany(db.transport, {
+  foreignKey: "export_branch_id",
+});
+
+db.shipping_orders.hasMany(db.expenses, {
+  foreignKey: "shipping_order_id",
+});
+
+db.shipping_orders.hasMany(db.receipt_from_the_recipient, {
+  foreignKey: "shipping_order_id",
+});
+
+db.shipping_orders.hasMany(db.transport, {
+  foreignKey: "shipping_order_id",
+});
+
+db.users.hasMany(db.shipping_orders, {
+  foreignKey: "receiving_staff_id",
+});
+
+
 const connectDatabase = () => {
   sequelize.authenticate()
     .then(() => console.log('Connection has been established successfully.'))

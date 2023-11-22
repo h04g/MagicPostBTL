@@ -1,8 +1,8 @@
-const {DataTypes} = require('sequelize')
+const { DataTypes } = require('sequelize')
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('orders', {
+        return queryInterface.createTable('shipping_orders', {
             id: {
                 type: DataTypes.UUID,
                 default: DataTypes.UUIDV4,
@@ -87,6 +87,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('orders');
+        return queryInterface.dropTable('shipping_orders');
     }
 }

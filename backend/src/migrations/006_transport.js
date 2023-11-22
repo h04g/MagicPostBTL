@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('expenses', {
+        return queryInterface.createTable('transport', {
             id: {
                 type: DataTypes.UUID,
                 default: DataTypes.UUIDV4,
@@ -12,33 +12,25 @@ module.exports = {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
-            main_charge: {
+            receiving_branch_id: {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
-            surcharge: {
+            receiving_time: {
+                allowNull: false,
+                type: DataTypes.DATE,
+            },
+            export_branch_id: {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
-            vat_fee: {
-                allowNull: false,
-                type: DataTypes.INTEGER(11),
-            },
-            total_fare: {
-                allowNull: false,
-                type: DataTypes.INTEGER(11),
-            },
-            other_revenue: {
-                allowNull: false,
-                type: DataTypes.INTEGER(11),
-            },
-            total_revenue: {
+            export_time: {
                 allowNull: true,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.DATE,
             }
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('expenses');
+        return queryInterface.dropTable('transport');
     }
 }

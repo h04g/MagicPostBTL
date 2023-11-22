@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize')
+const { DataTypes } = require('sequelize')
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
@@ -8,7 +8,7 @@ module.exports = {
                 default: DataTypes.UUIDV4,
                 primaryKey: true,
             },
-            order_id: {
+            shipping_order_id: {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
