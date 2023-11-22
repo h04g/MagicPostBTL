@@ -2,13 +2,13 @@ const { StatusCodes } = require('http-status-codes');
 const { decodeToken } = require('../utils/jwt');
 
 module.exports = function authorize(req, res, next) {
-    const accessToken = req.headers.authorization || req.cookies['access_token'];
+    const accessToken = req.headers['Authorization'];
     if (!accessToken) {
         return res.status(StatusCodes.FORBIDDEN).json({message: 'No credentials sent!'})
     }
 
     if (!accessToken.startsWith('Bearer ')) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Authorization Token is not Bearer!' })
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid authorization!' })
     }
 
     const token = accessToken.split(' ')[1];
