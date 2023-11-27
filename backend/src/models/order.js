@@ -147,6 +147,8 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             default: 0,
         },
+    }, {
+        timestamps: false,
     });
 
     return ShippingOrders;

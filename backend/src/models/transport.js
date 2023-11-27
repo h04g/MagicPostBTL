@@ -51,6 +51,8 @@ const TransportModel = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.DATE,
         }
+    }, {
+        timestamps: false,
     });
 
     return Transport;

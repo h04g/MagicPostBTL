@@ -56,6 +56,8 @@ const UserModel = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             default: DataTypes.NOW()
         }
+    }, {
+        timestamps: false,
     })
 
     User.beforeCreate(async (user, options) => {

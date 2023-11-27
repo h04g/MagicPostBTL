@@ -38,6 +38,8 @@ const BranchModel = (sequelize, DataTypes) => {
             allowNull: true,
             onDelete: 'CASCADE',
         }
+    }, {
+        timestamps: false,
     });
 
     return Branch;
