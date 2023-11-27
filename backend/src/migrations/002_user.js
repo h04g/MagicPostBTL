@@ -10,38 +10,50 @@ module.exports = {
             },
             username: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                unique: true,
+                type: DataTypes.STRING(255),
             },
             password: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(255),
             },
             email: {
                 allowNull: true,
-                type: DataTypes.STRING,
+                unique: true,
+                type: DataTypes.STRING(255),
             },
             name: {
                 allowNull: true,
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(255),
             },
-            phone_number: {
+            phone: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.STRING(11),
             },
             role: {
-                allowNull: false,
-                type: DataTypes.INTEGER(4),
-                defaultValue: 1,
+                type: DataTypes.TINYINT,
+                default: 0,
             },
-            branch_id: {
+
+            branch: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
+                references: {
+                    model: {
+                        tableName: 'branches',
+                    },
+                    key: 'id'
+                },
+                allowNull: true,
+                onDelete: 'CASCADE',
             },
-            createdAt: {
+
+            created_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             },
-            updatedAt: {
+
+            updated_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             }

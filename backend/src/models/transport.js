@@ -1,37 +1,57 @@
 const { hash } = require('../utils/bcrypt');
 
 const TransportModel = (sequelize, DataTypes) => {
-    const Transport = sequelize.define('transport', {
+    const Transport = sequelize.define('transports', {
         id: {
-            field: 'id',
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            default: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        shipping_order_id: {
-            field: 'shipping_order_id',
-            type: DataTypes.INTEGER(11),
+        order: {
+            allowNull: false,
+            type: DataTypes.UUID,
+            references: {
+                model: {
+                    tableName: 'orders',
+                },
+                key: 'id'
+            },
+            onDelete: 'CASCADE'
         },
+
         receiving_branch_id: {
-            field: 'receiving_branch_id',
-            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            type: DataTypes.UUID,
+            references: {
+                model: {
+                    tableName: 'branches',
+                },
+                key: 'id'
+            },
+            onDelete: 'CASCADE'
         },
+
         receiving_time: {
-            field: 'receiving_time',
+            allowNull: false,
             type: DataTypes.DATE,
+            default: DataTypes.NOW(),
         },
         export_branch_id: {
-            field: 'export_branch_id',
-            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            type: DataTypes.UUID,
+            references: {
+                model: {
+                    tableName: 'branches',
+                },
+                key: 'id'
+            },
+            onDelete: 'CASCADE'
         },
         export_time: {
-            field: 'export_time',
+            allowNull: true,
             type: DataTypes.DATE,
         }
-    }, {
-        timestamp: true,
-    }
-    );
+    });
 
     return Transport;
 }

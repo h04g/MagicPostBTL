@@ -41,49 +41,42 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-/**
- * Add associations below this comment
- * 
- * Example:
- * 
- * db.table_A.hasMany(db.table_B, {
- *    foreignKey: 'id_A'
- *  });
- *  db.table_B.belongsTo(db.table_A);
- */
+db.User = require('./user')(sequelize, Sequelize.DataTypes)
+db.Branch = require('./branch')(sequelize, Sequelize.DataTypes)
+db.Order = require('./order')(sequelize, Sequelize.DataTypes)
+db.Transport = require('./transport')(sequelize, Sequelize.DataTypes)
 
-db.branch.hasMany(db.users, {
-  foreignKey: 'branch_id'
-});
+// user - branch
+db.Branch.hasMany(db.User, {
+  foreignKey: 'branch',
+  as: 'User'
+})
+db.User.belongsTo(db.Branch, {
+  as: 'Branch'
+})
 
-db.branch.hasMany(db.shipping_orders, {
-  foreignKey: "sender_postal_id",
-});
+// branch - branch
+// db.Branch.hasMany(db.Branch)
+db.Branch.belongsTo(db.Branch, {
+  foreignKey: 'consolidation_point',
+  as: 'Consolidation_point'
+})
 
-db.branch.hasMany(db.transport, {
-  foreignKey: "receiving_branch_id",
-});
+// branch - order
+db.Order.belongsTo(db.Branch, {
+  foreignKey: 'departure',
+  as: 'Departure'
+})
+db.Order.belongsTo(db.Branch, {
+  foreignKey: 'destination',
+  as: 'Destination'
+})
 
-db.branch.hasMany(db.transport, {
-  foreignKey: "export_branch_id",
-});
-
-db.shipping_orders.hasMany(db.expenses, {
-  foreignKey: "shipping_order_id",
-});
-
-db.shipping_orders.hasMany(db.receipt_from_the_recipient, {
-  foreignKey: "shipping_order_id",
-});
-
-db.shipping_orders.hasMany(db.transport, {
-  foreignKey: "shipping_order_id",
-});
-
-db.users.hasMany(db.shipping_orders, {
-  foreignKey: "receiving_staff_id",
-});
-
+// order -transport
+db.Order.hasMany(db.Transport, {
+  foreignKey: 'order'
+})
+db.Transport.belongsTo(db.Order)
 
 const connectDatabase = () => {
   sequelize.authenticate()

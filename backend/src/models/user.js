@@ -3,46 +3,60 @@ const { hash } = require('../utils/bcrypt');
 const UserModel = (sequelize, DataTypes) => {
     const User = sequelize.define('users', {
         id: {
-            field: 'id',
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            default: DataTypes.UUIDV4,
             primaryKey: true,
         },
         username: {
-            field: 'username',
-            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            type: DataTypes.STRING(255),
         },
         password: {
-            field: 'password',
-            type: DataTypes.STRING,
+            allowNull: false,
+            type: DataTypes.STRING(255),
         },
         email: {
-            field: 'email',
-            type: DataTypes.STRING,
-            unique: true
+            allowNull: true,
+            unique: true,
+            type: DataTypes.STRING(255),
         },
         name: {
-            field: 'name',
-            type: DataTypes.STRING,
+            allowNull: true,
+            type: DataTypes.STRING(255),
         },
-        phone_number: {
-            field: 'phone_number',
-            type: DataTypes.INTEGER(11),
-            unique: true
+        phone: {
+            allowNull: false,
+            type: DataTypes.STRING(11),
         },
         role: {
-            field: 'role',
-            type: DataTypes.INTEGER(4),
-            defaultValue: 1,
+            type: DataTypes.TINYINT,
+            default: 0,
         },
-        branch_id: {
-            field: 'branch_id',
-            type: DataTypes.INTEGER(11),
+
+        branch: {
+            allowNull: false,
+            type: DataTypes.UUID,
+            references: {
+                model: {
+                    tableName: 'branches',
+                },
+                key: 'id'
+            },
+            allowNull: true,
+            onDelete: 'CASCADE',
         },
-    }, {
-        timestamp: true,
-    }
-    );
+
+        created_at: {
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        },
+
+        updated_at: {
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        }
+    })
 
     User.beforeCreate(async (user, options) => {
         const hashedPassword = hash(user.password);

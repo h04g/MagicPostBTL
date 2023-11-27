@@ -3,36 +3,42 @@ const { hash } = require('../utils/bcrypt');
 const BranchModel = (sequelize, DataTypes) => {
     const Branch = sequelize.define('branch', {
         id: {
-            field: 'id',
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            default: DataTypes.UUIDV4,
             primaryKey: true,
         },
         role: {
-            field: 'role',
-            type: DataTypes.INTEGER(4),
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            default: 1,
         },
         address: {
-            field: 'address',
             allowNull: false,
-            type: DataTypes.STRING(1000),
+            type: DataTypes.TEXT,
+            default: '',
         },
-        createdAt: {
-            field: 'created_at',
+        created_at: {
             type: DataTypes.DATE,
             default: DataTypes.NOW()
         },
-        updatedAt: {
-            field: 'updated_at',
+        updated_at: {
             type: DataTypes.DATE,
             default: DataTypes.NOW()
+        },
+
+        consolidation_point: {
+            allowNull: false,
+            type: DataTypes.UUID,
+            references: {
+                model: {
+                    tableName: 'branches',
+                },
+                key: 'id'
+            },
+            allowNull: true,
+            onDelete: 'CASCADE',
         }
-
-
-    }, {
-        timestamp: true,
-    }
-    );
+    });
 
     return Branch;
 }

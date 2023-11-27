@@ -4,7 +4,7 @@
 # config environment
 create .env file
 
-# run mysql using docker or use local mysql
+# run mysql using docker or local mysql instead.
 docker-compose up -d
 
 # start app
