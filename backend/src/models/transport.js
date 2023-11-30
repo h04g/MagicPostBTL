@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const TransportModel = (sequelize, DataTypes) => {
     const Transport = sequelize.define('transports', {
         id: {

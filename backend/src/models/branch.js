@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const BranchModel = (sequelize, DataTypes) => {
     const Branch = sequelize.define('branch', {
         id: {
@@ -27,7 +25,6 @@ const BranchModel = (sequelize, DataTypes) => {
         },
 
         consolidation_point: {
-            allowNull: false,
             type: DataTypes.UUID,
             references: {
                 model: {

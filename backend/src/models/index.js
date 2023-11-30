@@ -49,34 +49,27 @@ db.Transport = require('./transport')(sequelize, Sequelize.DataTypes)
 // user - branch
 db.Branch.hasMany(db.User, {
   foreignKey: 'branch',
-  as: 'User'
-})
-db.User.belongsTo(db.Branch, {
-  as: 'Branch'
 })
 
-// branch - branch
-// db.Branch.hasMany(db.Branch)
-db.Branch.belongsTo(db.Branch, {
-  foreignKey: 'consolidation_point',
-  as: 'Consolidation_point'
+// // branch - branch
+db.Branch.hasMany(db.Branch, {
+    foreignKey: 'consolidation_point',
 })
 
-// branch - order
+// // branch - order
 db.Order.belongsTo(db.Branch, {
   foreignKey: 'departure',
   as: 'Departure'
 })
 db.Order.belongsTo(db.Branch, {
   foreignKey: 'destination',
-  as: 'Destination'
+  as: 'Destination',
 })
 
-// order -transport
-db.Order.hasMany(db.Transport, {
+// // order -transport
+db.Order.hasMany(db.Transport,  {
   foreignKey: 'order'
 })
-db.Transport.belongsTo(db.Order)
 
 const connectDatabase = () => {
   sequelize.authenticate()

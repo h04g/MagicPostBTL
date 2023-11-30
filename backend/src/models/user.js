@@ -35,7 +35,6 @@ const UserModel = (sequelize, DataTypes) => {
         },
 
         branch: {
-            allowNull: false,
             type: DataTypes.UUID,
             references: {
                 model: {

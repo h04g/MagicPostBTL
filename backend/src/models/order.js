@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const ShippingOrdersModel = (sequelize, DataTypes) => {
     const ShippingOrders = sequelize.define('shipping_orders', {
         id: {
