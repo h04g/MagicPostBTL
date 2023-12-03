@@ -24,6 +24,7 @@ const UserModel = (sequelize, DataTypes) => {
         name: {
             field: 'name',
             type: DataTypes.STRING,
+            unique: true
         },
         phone_number: {
             field: 'phone_number',

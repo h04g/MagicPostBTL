@@ -25,7 +25,7 @@ module.exports = {
                 type: DataTypes.STRING,
             },
             phone_number: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.INTEGER(11),
             },
             role: {
