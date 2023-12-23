@@ -1,10 +1,6 @@
 /*
 =========================================================
-* Dash UI - Bootstrap 5 Admin & Dashboard Theme
-=========================================================
-* Product Page: https://codescandy.com/dashui/index.html
-* Copyright 2023 Codescandy (https://codescandy.com/)
-* Designed and coded by https://codescandy.com
+
 ========================================================= */
 
 // Inter Fonts
@@ -40,29 +36,18 @@
 // User
 @import "user";
 
-.heading-permalink{
+.heading-permalink {
+  color: transparent;
+  margin-left: -2rem;
+  &:hover {
     color: transparent;
-    margin-left: -2rem;
-    &:hover{
-        color: transparent;
+  }
 
-
-    }
-
-
-
-&::before {
-    color: rgba(82,95,127,0);
+  &::before {
+    color: rgba(82, 95, 127, 0);
     content: "#";
-
-
-
-}
-&:hover:before{
+  }
+  &:hover:before {
     color: $primary;
-
-
-
-}
-
+  }
 }
