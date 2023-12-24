@@ -40,6 +40,12 @@ const UserModel = (sequelize, DataTypes) => {
             field: 'branch_id',
             type: DataTypes.INTEGER(11),
         },
+        is_unused: {
+            field: 'is_unused',
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            default: true
+        },
         createdAt: {
             field: 'created_at',
             type: DataTypes.DATE,

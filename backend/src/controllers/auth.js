@@ -17,9 +17,12 @@ const login = ErrorWrapperHandler(async (req, res, next) => {
             accessToken: tokens.accessToken
         })
     } catch (e){
-        return res.status(e.code).json({
-            message: e.message
-        })
+        if(e.code >= 100 && e.code < 600){
+            return res.status(e.code).json({
+                message: e.message
+            })
+        } 
+        return res.status(StatusCodes.BAD_GATEWAY).json({})
     }
 
 })
@@ -40,14 +43,37 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
             message: message
         })
     } catch (e){
-        return res.status(e.code).json({
-            message: e.message
-        })
+        if(e.code >= 100 && e.code < 600){
+            return res.status(e.code).json({
+                message: e.message
+            })
+        } 
+        return res.status(StatusCodes.BAD_GATEWAY).json({})
     }
 })
+
+const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
+    try {
+        const delete_user_id = req.body.deleteUserId
+        const token = req.cookies.access_token
+        const message = await authService.deleteUser(token, delete_user_id)
+        return res.status(StatusCodes.OK).json({
+            message: message
+        })
+    } catch (e){
+        if(e.code >= 100 && e.code < 600){
+            return res.status(e.code).json({
+                message: e.message
+            })
+        } 
+        return res.status(StatusCodes.BAD_GATEWAY).json({})
+    }
+})
+
 
 module.exports = {
     login,
     logout,
-    createUser
+    createUser,
+    deleteUser
 }
