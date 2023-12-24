@@ -27,6 +27,14 @@ module.exports = {
             export_time: {
                 allowNull: true,
                 type: DataTypes.DATE,
+            },
+            created_at: {
+                type: DataTypes.DATE,
+                default: DataTypes.NOW()
+            },
+            updated_at: {
+                type: DataTypes.DATE,
+                default: DataTypes.NOW()
             }
         });
     },

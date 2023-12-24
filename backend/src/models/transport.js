@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const TransportModel = (sequelize, DataTypes) => {
     const Transport = sequelize.define('transport', {
         id: {
@@ -27,6 +25,16 @@ const TransportModel = (sequelize, DataTypes) => {
         export_time: {
             field: 'export_time',
             type: DataTypes.DATE,
+        },
+        createdAt: {
+            field: 'created_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        },
+        updatedAt: {
+            field: 'updated_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
         }
     }, {
         timestamp: true,

@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const ExpensesModel = (sequelize, DataTypes) => {
     const Expenses = sequelize.define('expenses', {
         id: {

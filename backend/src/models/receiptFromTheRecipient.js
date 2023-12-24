@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const ReceiptFromTheRecipientModel = (sequelize, DataTypes) => {
     const ReceiptFromTheRecipient = sequelize.define('receipt_from_the_recipient', {
         id: {
@@ -24,6 +22,16 @@ const ReceiptFromTheRecipientModel = (sequelize, DataTypes) => {
         total_revenue: {
             field: 'total_revenue',
             type: DataTypes.INTEGER(11),
+        },
+        createdAt: {
+            field: 'created_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        },
+        updatedAt: {
+            field: 'updated_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
         }
     }, {
         timestamp: true,

@@ -37,11 +37,11 @@ module.exports = {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
-            createdAt: {
+            created_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             },
-            updatedAt: {
+            updated_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             }

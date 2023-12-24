@@ -1,7 +1,5 @@
-const { hash } = require('../utils/bcrypt');
-
 const BranchModel = (sequelize, DataTypes) => {
-    const Branch = sequelize.define('branch', {
+    const Branch = sequelize.define('branches', {
         id: {
             field: 'id',
             type: DataTypes.UUID,
@@ -27,12 +25,9 @@ const BranchModel = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             default: DataTypes.NOW()
         }
-
-
     }, {
         timestamp: true,
-    }
-    );
+    });
 
     return Branch;
 }

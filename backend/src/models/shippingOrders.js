@@ -1,5 +1,3 @@
-const { hash } = require('../utils/bcrypt');
-
 const ShippingOrdersModel = (sequelize, DataTypes) => {
     const ShippingOrders = sequelize.define('shipping_orders', {
         id: {
@@ -75,6 +73,16 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         delivery_time: {
             field: 'delivery_time',
             type: DataTypes.DATE,
+        },
+        createdAt: {
+            field: 'created_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        },
+        updatedAt: {
+            field: 'updated_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
         }
     }, {
         timestamp: true,

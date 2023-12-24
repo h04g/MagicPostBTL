@@ -41,6 +41,13 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.User = require('./user')(sequelize, Sequelize.DataTypes);
+db.Branch = require('./branch')(sequelize, Sequelize.DataTypes);
+db.Transport = require('./transport')(sequelize, Sequelize.DataTypes);
+db.ReceiptFromTheRecipient =  require('./receiptFromTheRecipient')(sequelize, Sequelize.DataTypes);
+db.Expenses =  require('./expenses')(sequelize, Sequelize.DataTypes);
+db.ShippingOrders =  require('./shippingOrders')(sequelize, Sequelize.DataTypes);
+
 /**
  * Add associations below this comment
  * 
@@ -52,35 +59,35 @@ db.Sequelize = Sequelize;
  *  db.table_B.belongsTo(db.table_A);
  */
 
-db.branch.hasMany(db.users, {
-  foreignKey: 'branch_id'
-});
+db.Branch.hasMany(db.User, {
+  foreignKey: 'branch_id',
+})
 
-db.branch.hasMany(db.shipping_orders, {
+db.Branch.hasMany(db.ShippingOrders, {
   foreignKey: "sender_postal_id",
 });
 
-db.branch.hasMany(db.transport, {
+db.Branch.hasMany(db.Transport, {
   foreignKey: "receiving_branch_id",
 });
 
-db.branch.hasMany(db.transport, {
+db.Branch.hasMany(db.Transport, {
   foreignKey: "export_branch_id",
 });
 
-db.shipping_orders.hasMany(db.expenses, {
+db.ShippingOrders.hasMany(db.Expenses, {
   foreignKey: "shipping_order_id",
 });
 
-db.shipping_orders.hasMany(db.receipt_from_the_recipient, {
+db.ShippingOrders.hasMany(db.ReceiptFromTheRecipient, {
   foreignKey: "shipping_order_id",
 });
 
-db.shipping_orders.hasMany(db.transport, {
+db.ShippingOrders.hasMany(db.Transport, {
   foreignKey: "shipping_order_id",
 });
 
-db.users.hasMany(db.shipping_orders, {
+db.User.hasMany(db.ShippingOrders, {
   foreignKey: "receiving_staff_id",
 });
 

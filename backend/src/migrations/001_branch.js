@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize')
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('branch', {
+        return queryInterface.createTable('branches', {
             id: {
                 type: DataTypes.UUID,
                 default: DataTypes.UUIDV4,
@@ -16,11 +16,11 @@ module.exports = {
                 allowNull: false,
                 type: DataTypes.STRING(1000),
             },
-            createdAt: {
+            created_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             },
-            updatedAt: {
+            updated_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
             }

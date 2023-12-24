@@ -40,6 +40,16 @@ const UserModel = (sequelize, DataTypes) => {
             field: 'branch_id',
             type: DataTypes.INTEGER(11),
         },
+        createdAt: {
+            field: 'created_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        },
+        updatedAt: {
+            field: 'updated_at',
+            type: DataTypes.DATE,
+            default: DataTypes.NOW()
+        }
     }, {
         timestamp: true,
     }

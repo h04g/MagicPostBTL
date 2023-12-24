@@ -35,6 +35,14 @@ module.exports = {
             total_revenue: {
                 allowNull: true,
                 type: DataTypes.INTEGER(11),
+            },
+            created_at: {
+                type: DataTypes.DATE,
+                default: DataTypes.NOW()
+            },
+            updated_at: {
+                type: DataTypes.DATE,
+                default: DataTypes.NOW()
             }
         });
     },
