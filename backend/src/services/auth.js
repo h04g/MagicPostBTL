@@ -47,19 +47,6 @@ const createUser = async (token, username, role, branch_id, name) => {
     }
 }
 
-const getUserByUsername = async (username) => {
-
-    return await db.User.findOne({
-        where: { username: username },
-        raw: true
-    })
-}
-
-const getUserById = async (id) => {
-
-    return await db.User.findByPk(id)
-}
-
 const login = async (username, password) => {
     const user = await db.User.findOne({
         where: { username: username },
@@ -93,6 +80,7 @@ const login = async (username, password) => {
         branch_id: user.branch_id,
         scope: []
     })
+
     return {
         accessToken,
         refreshToken: '',
@@ -132,9 +120,64 @@ const deleteUser = async (token, user_id) => {
 
 }
 
+const getUsers = async (token) => {
+    const user = decodeToken(token)
+    if (!user) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Invalid token'
+        throw err
+    }
+
+    if (user.role == ROLE_ADMIN) {
+        return await getAllUsers()
+    }
+
+    return await getUsersByBranchId(user.branch_id)
+}
+
+const getUserByUsername = async (username) => {
+
+    return await db.User.findOne({
+        where: { username: username },
+        raw: true
+    })
+}
+
+const getUserById = async (id) => {
+
+    return await db.User.findByPk(id)
+}
+
+
+const getUsersByBranchId = async (branch_id) => {
+
+    return await db.User.findAll({
+        where: {
+            branch_id: branch_id,
+        },
+        where: {
+            is_unused: false,
+        },
+    })
+}
+
+const getAllUsers = async () => {
+
+    return await db.User.findAll({
+        where: {
+            is_unused: false,
+        },
+    }, {
+        order: [
+            ['branch_id', 'ASC'],
+        ],
+    })
+}
 
 module.exports = {
     createUser,
     login,
     deleteUser,
+    getUsers
 }

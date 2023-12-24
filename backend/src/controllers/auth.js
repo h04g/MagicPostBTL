@@ -16,12 +16,12 @@ const login = ErrorWrapperHandler(async (req, res, next) => {
         return res.status(StatusCodes.OK).json({
             accessToken: tokens.accessToken
         })
-    } catch (e){
-        if(e.code >= 100 && e.code < 600){
+    } catch (e) {
+        if (e.code >= 100 && e.code < 600) {
             return res.status(e.code).json({
                 message: e.message
             })
-        } 
+        }
         return res.status(StatusCodes.BAD_GATEWAY).json({})
     }
 
@@ -42,12 +42,12 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
         return res.status(StatusCodes.OK).json({
             message: message
         })
-    } catch (e){
-        if(e.code >= 100 && e.code < 600){
+    } catch (e) {
+        if (e.code >= 100 && e.code < 600) {
             return res.status(e.code).json({
                 message: e.message
             })
-        } 
+        }
         return res.status(StatusCodes.BAD_GATEWAY).json({})
     }
 })
@@ -60,20 +60,41 @@ const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
         return res.status(StatusCodes.OK).json({
             message: message
         })
-    } catch (e){
-        if(e.code >= 100 && e.code < 600){
+    } catch (e) {
+        if (e.code >= 100 && e.code < 600) {
             return res.status(e.code).json({
                 message: e.message
             })
-        } 
+        }
         return res.status(StatusCodes.BAD_GATEWAY).json({})
     }
 })
+
+const getUsers = ErrorWrapperHandler(async (req, res, next) => {
+    try {
+        const token = req.cookies.access_token
+        const data = await authService.getUsers(token)
+        return res.status(StatusCodes.OK).json({
+            data: data
+
+        })
+    } catch (e) {
+        console.log(e);
+        if (e.code >= 100 && e.code < 600) {
+            return res.status(e.code).json({
+                message: e.message
+            })
+        }
+        return res.status(StatusCodes.BAD_GATEWAY).json({})
+    }
+})
+
 
 
 module.exports = {
     login,
     logout,
     createUser,
-    deleteUser
+    deleteUser,
+    getUsers
 }

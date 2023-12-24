@@ -44,7 +44,7 @@ const UserModel = (sequelize, DataTypes) => {
             field: 'is_unused',
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            default: true
+            default: false
         },
         createdAt: {
             field: 'created_at',

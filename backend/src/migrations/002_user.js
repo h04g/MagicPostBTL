@@ -40,7 +40,7 @@ module.exports = {
             is_unused: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                default: true
+                default: false
             },
             created_at: {
                 type: DataTypes.DATE,
