@@ -155,8 +155,6 @@ const getUsersByBranchId = async (branch_id) => {
     return await db.User.findAll({
         where: {
             branch_id: branch_id,
-        },
-        where: {
             is_unused: false,
         },
     })

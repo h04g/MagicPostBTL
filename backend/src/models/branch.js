@@ -15,6 +15,12 @@ const BranchModel = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.STRING(1000),
         },
+        is_unused: {
+            field: 'is_unused',
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            default: false
+        },
         createdAt: {
             field: 'created_at',
             type: DataTypes.DATE,
