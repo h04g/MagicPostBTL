@@ -7,28 +7,28 @@ const { hash, compare } = require('../utils/bcrypt')
 const { getBranchById } = require('./branch')
 
 const createUser = async (token, username, role, branch_id, name) => {
-    const user = decodeToken(token);
+    const user = decodeToken(token)
     if (!user) {
-        const err = new Error()
+        let err = new Error()
         err.code = StatusCodes.UNAUTHORIZED
         err.message = 'Invalid token'
         throw err
     }
     const branch = await getBranchById(branch_id)
     if (!username || !role || !branch) {
-        const err = new Error()
+        let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
         throw err
     }
     if (user.role == ROLE_TRANSIT_POINT_STAFF || user.role == ROLE_TRANSACTION_POINT_STAFF || (user.role == ROLE_TRANSACTION_POINT_MANAGER && role == ROLE_TRANSIT_POINT_STAFF) || (user.role == ROLE_TRANSIT_POINT_MANAGER && role == ROLE_TRANSACTION_POINT_STAFF)) {
-        const err = new Error()
+        let err = new Error()
         err.code = StatusCodes.FORBIDDEN
         err.message = 'You do not have access'
         throw err
     }
     if (await getUserByUsername(username)) {
-        const err = new Error()
+        let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Username exists'
         throw err
@@ -40,11 +40,100 @@ const createUser = async (token, username, role, branch_id, name) => {
         role: role,
         branch_id: branch_id,
         name: name
-    });
+    })
 
     return {
         message: "Account successfully created"
     }
+}
+
+const login = async (username, password) => {
+    const user = await db.User.findOne({
+        where: { username: username },
+        raw: true
+    })
+    if (!user) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Username or password is incorrect'
+        throw err
+    }
+
+    if (user.is_unused) {
+        let err = new Error()
+        err.code = StatusCodes.BAD_GATEWAY
+        err.message = 'Account is no longer in use'
+        throw err
+    }
+
+    const isMatchPassword = compare(password, user.password)
+    if (!isMatchPassword) {
+        let err = new Error('Username or password is incorrect')
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Username or password is incorrect'
+        throw err
+    }
+
+    const accessToken = generateToken({
+        id: user.id,
+        role: user.role,
+        branch_id: user.branch_id,
+        scope: []
+    })
+
+    return {
+        accessToken,
+        refreshToken: '',
+    }
+}
+
+const deleteUser = async (token, user_id) => {
+    const user = decodeToken(token)
+    if (!user) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Invalid token'
+        throw err
+    }
+    const delete_user = await getUserById(user_id)
+    if (!delete_user) {
+        let err = new Error()
+        err.code = StatusCodes.BAD_REQUEST
+        err.message = 'Account does not exist.'
+        throw err
+    }
+    if (user.role == ROLE_ADMIN || (user.branch_id == delete_user.branch_id && ((user.role == ROLE_TRANSACTION_POINT_MANAGER && delete_user.role == ROLE_TRANSACTION_POINT_STAFF) || (user.role == ROLE_TRANSIT_POINT_MANAGER && delete_user.role == ROLE_TRANSIT_POINT_STAFF)))) {
+        await db.User.update({ is_unused: true }, {
+            where: {
+                id: user_id,
+            },
+        });
+        return {
+            message: "Account deleted successfully."
+        }
+    }
+
+    let err = new Error()
+    err.code = StatusCodes.FORBIDDEN
+    err.message = 'You do not have access'
+    throw err
+
+}
+
+const getUsers = async (token) => {
+    const user = decodeToken(token)
+    if (!user) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Invalid token'
+        throw err
+    }
+
+    if (user.role == ROLE_ADMIN) {
+        return await getAllUsers()
+    }
+
+    return await getUsersByBranchId(user.branch_id)
 }
 
 const getUserByUsername = async (username) => {
@@ -55,41 +144,38 @@ const getUserByUsername = async (username) => {
     })
 }
 
-const login = async (username, password) => {
-    const user = await db.User.findOne({
-        where: { username: username },
-        raw: true
-    })
-    if (!user) {
-        const err = new Error()
-        err.code = StatusCodes.UNAUTHORIZED
-        err. message = 'Username or password is incorrect'
-        throw err
-    }
+const getUserById = async (id) => {
 
-    const isMatchPassword = compare(password, user.password)
-    if (!isMatchPassword) {
-        const err = new Error('Username or password is incorrect')
-        err.code = StatusCodes.UNAUTHORIZED
-        err. message = 'Username or password is incorrect'
-        throw err
-    }
-
-    const accessToken = generateToken({
-        id: user.id,
-        role: user.role,
-        scope: []
-    })
-
-    return {
-        accessToken,
-        refreshToken: '',
-    }
+    return await db.User.findByPk(id)
 }
 
 
+const getUsersByBranchId = async (branch_id) => {
+
+    return await db.User.findAll({
+        where: {
+            branch_id: branch_id,
+            is_unused: false,
+        },
+    })
+}
+
+const getAllUsers = async () => {
+
+    return await db.User.findAll({
+        where: {
+            is_unused: false,
+        },
+    }, {
+        order: [
+            ['branch_id', 'ASC'],
+        ],
+    })
+}
 
 module.exports = {
     createUser,
     login,
+    deleteUser,
+    getUsers
 }

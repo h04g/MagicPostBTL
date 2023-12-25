@@ -1,44 +1,32 @@
 const { StatusCodes } = require('http-status-codes')
 const ErrorWrapperHandler = require('../errors/handler')
-const authService = require('../services/auth')
+const branchService = require('../services/branch')
 
-const login = ErrorWrapperHandler(async (req, res, next) => {
+const createBranch = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const username = req.body.username
-        const password = req.body.password
-        const tokens = await authService.login(username, password)
-        res.cookie('access_token', `Bearer ${tokens.accessToken}`, {
-            path: '/',
-            httpOnly: true,
-            secure: true,
-            maxAge: 86400 * 1000,
-        });
-        return res.status(StatusCodes.OK).json({
-            accessToken: tokens.accessToken
-        })
-    } catch (e) {
-        if (e.code >= 100 && e.code < 600) {
-            return res.status(e.code).json({
-                message: e.message
-            })
-        }
-        return res.status(StatusCodes.BAD_GATEWAY).json({})
-    }
-
-})
-
-const logout = ErrorWrapperHandler((req, res, next) => {
-    return res.status(StatusCodes.OK).json("logout")
-})
-
-const createUser = ErrorWrapperHandler(async (req, res, next) => {
-    try {
-        const username = req.body.username
         const role = req.body.role
-        const branch_id = req.body.branch_id
-        const name = req.body.name
-        const token = req.cookies.access_token
-        const message = await authService.createUser(token, username, role, branch_id, name)
+        const address = req.body.address
+        const branch = await branchService.createBranch(role, address)
+        return res.status(StatusCodes.OK).json({
+            data : {branch : branch}
+        })
+    } catch (e) {
+        if (e.code >= 100 && e.code < 600) {
+            return res.status(e.code).json({
+                message: e.message
+            })
+        }
+        return res.status(StatusCodes.BAD_GATEWAY).json({})
+    }
+
+})
+
+const updateBranch = ErrorWrapperHandler(async (req, res, next) => {
+    try {
+        const id = req.body.id
+        const role = req.body.role
+        const address = req.body.address
+        const message = await branchService.updateBranch(id, role, address)
         return res.status(StatusCodes.OK).json({
             message: message
         })
@@ -52,11 +40,11 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
     }
 })
 
-const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
+const deleteBranch = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const delete_user_id = req.body.deleteUserId
+        const id = req.body.deleteBranchId
         const token = req.cookies.access_token
-        const message = await authService.deleteUser(token, delete_user_id)
+        const message = await branchService.deleteBranch(id);
         return res.status(StatusCodes.OK).json({
             message: message
         })
@@ -70,10 +58,10 @@ const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
     }
 })
 
-const getUsers = ErrorWrapperHandler(async (req, res, next) => {
+const getBranchs = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const token = req.cookies.access_token
-        const data = await authService.getUsers(token)
+        const role = req.query.role
+        const data = await branchService.getBranchByRole(role);
         return res.status(StatusCodes.OK).json({
             data: data
 
@@ -92,9 +80,8 @@ const getUsers = ErrorWrapperHandler(async (req, res, next) => {
 
 
 module.exports = {
-    login,
-    logout,
-    createUser,
-    deleteUser,
-    getUsers
+    createBranch,
+    updateBranch,
+    deleteBranch,
+    getBranchs
 }

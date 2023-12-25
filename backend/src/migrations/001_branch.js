@@ -16,6 +16,11 @@ module.exports = {
                 allowNull: false,
                 type: DataTypes.STRING(1000),
             },
+            is_unused: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                default: false
+            },
             created_at: {
                 type: DataTypes.DATE,
                 default: DataTypes.NOW()
