@@ -28,7 +28,7 @@ const Home = () => {
                 </div>
                 <div>
                   <Link href="#" className="btn btn-white">
-                    Tạo Đơn Hàng Mới
+                    Tạo Đơn Hàng
                   </Link>
                 </div>
               </div>

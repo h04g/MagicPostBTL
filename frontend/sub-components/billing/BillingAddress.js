@@ -19,7 +19,7 @@ const BillingAddress = () => {
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             <h4 className="mb-1" id="billingAddressModalLabel">
-              Thêm địa chỉ mới
+              Thêm địa chỉ moi
             </h4>
           </Modal.Title>
         </Modal.Header>

@@ -3,8 +3,7 @@
   "version": "1.1.0",
   "private": true,
   "author": {
-    "name": "codescandy",
-    "url": "https://codescandy.com"
+    "name": "HONAG TRAN"
   },
   "keywords": [
     "react",
@@ -25,6 +24,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start:dev": "next dev",
     "start": "next start",
     "lint": "next lint"
   },
