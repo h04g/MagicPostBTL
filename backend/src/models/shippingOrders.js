@@ -6,8 +6,8 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        receiving_staff_id: {
-            field: 'receiving_staff_id',
+        staff_id: {
+            field: 'staff_id',
             type: DataTypes.INTEGER(11),
         },
         sender_name: {
@@ -20,7 +20,7 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         },
         sender_phone_number: {
             field: 'sender_phone_number',
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.STRING,
         },
         sender_postal_id: {
             field: 'sender_postal_id',
@@ -36,7 +36,7 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         },
         receiver_phone_number: {
             field: 'receiver_phone_number',
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.STRING,
         },
         receiver_postal_id: {
             field: 'receiver_postal_id',
@@ -59,7 +59,7 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
         },
         convert_weigh: {
-            field: 'email',
+            field: 'convert_weigh',
             type: DataTypes.FLOAT,
         },
         node: {
@@ -73,6 +73,42 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         delivery_time: {
             field: 'delivery_time',
             type: DataTypes.DATE,
+        },
+        main_charge: {
+            field: 'main_charge',
+            type: DataTypes.INTEGER(11),
+        },
+        surcharge: {
+            field: 'surcharge',
+            type: DataTypes.INTEGER(11),
+        },
+        expenses_gygt: {
+            field: 'expenses_gygt',
+            type: DataTypes.INTEGER(11),
+        },
+        vat_fee: {
+            field: 'vat_fee',
+            type: DataTypes.INTEGER(11),
+        },
+        total_fare: {
+            field: 'total_fare',
+            type: DataTypes.INTEGER(11),
+        },
+        other_revenue: {
+            field: 'other_revenue',
+            type: DataTypes.INTEGER(11),
+        },
+        cod: {
+            field: 'cod',
+            type: DataTypes.INTEGER(11),
+        },
+        receiver_other_revenue: {
+            field: 'receiver_other_revenue',
+            type: DataTypes.INTEGER(11),
+        },
+        total_revenue: {
+            field: 'total_revenue',
+            type: DataTypes.INTEGER(11),
         },
         createdAt: {
             field: 'created_at',

@@ -44,8 +44,6 @@ db.Sequelize = Sequelize;
 db.User = require('./user')(sequelize, Sequelize.DataTypes);
 db.Branch = require('./branch')(sequelize, Sequelize.DataTypes);
 db.Transport = require('./transport')(sequelize, Sequelize.DataTypes);
-db.ReceiptFromTheRecipient =  require('./receiptFromTheRecipient')(sequelize, Sequelize.DataTypes);
-db.Expenses =  require('./expenses')(sequelize, Sequelize.DataTypes);
 db.ShippingOrders =  require('./shippingOrders')(sequelize, Sequelize.DataTypes);
 
 /**
@@ -75,20 +73,12 @@ db.Branch.hasMany(db.Transport, {
   foreignKey: "export_branch_id",
 });
 
-db.ShippingOrders.hasMany(db.Expenses, {
-  foreignKey: "shipping_order_id",
-});
-
-db.ShippingOrders.hasMany(db.ReceiptFromTheRecipient, {
-  foreignKey: "shipping_order_id",
-});
-
 db.ShippingOrders.hasMany(db.Transport, {
   foreignKey: "shipping_order_id",
 });
 
 db.User.hasMany(db.ShippingOrders, {
-  foreignKey: "receiving_staff_id",
+  foreignKey: "staff_id",
 });
 
 

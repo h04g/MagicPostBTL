@@ -8,7 +8,7 @@ module.exports = {
                 default: DataTypes.UUIDV4,
                 primaryKey: true,
             },
-            receiving_staff_id: {
+            staff_id: {
                 allowNull: false,
                 type: DataTypes.INTEGER(11),
             },
@@ -22,7 +22,7 @@ module.exports = {
             },
             sender_phone_number: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.STRING,
             },
             sender_postal_id: {
                 allowNull: false,
@@ -38,7 +38,7 @@ module.exports = {
             },
             receiver_phone_number: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.STRING,
             },
             receiver_postal_id: {
                 allowNull: false,
@@ -75,6 +75,42 @@ module.exports = {
             delivery_time: {
                 allowNull: true,
                 type: DataTypes.DATE,
+            },
+            main_charge: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            surcharge: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            expenses_gygt: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            vat_fee: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            other_revenue: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            total_fare: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            cod: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            receiver_other_revenue: {
+                allowNull: false,
+                type: DataTypes.INTEGER(11),
+            },
+            total_revenue: {
+                allowNull: true,
+                type: DataTypes.INTEGER(11),
             },
             created_at: {
                 type: DataTypes.DATE,

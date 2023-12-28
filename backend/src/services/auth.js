@@ -15,7 +15,8 @@ const createUser = async (token, username, role, branch_id, name) => {
         throw err
     }
     const branch = await getBranchById(branch_id)
-    if (!username || !role || !branch) {
+    let checkUser = await getUserByUsername(username)
+    if (username == null || checkUser != null || (role != ROLE_ADMIN && role != ROLE_TRANSACTION_POINT_MANAGER && role != ROLE_TRANSACTION_POINT_STAFF && role != ROLE_TRANSIT_POINT_MANAGER && role != ROLE_TRANSIT_POINT_STAFF )  || !branch) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -39,7 +40,8 @@ const createUser = async (token, username, role, branch_id, name) => {
         password: username,
         role: role,
         branch_id: branch_id,
-        name: name
+        name: name,
+        is_unused: false
     })
 
     return {
@@ -48,10 +50,7 @@ const createUser = async (token, username, role, branch_id, name) => {
 }
 
 const login = async (username, password) => {
-    const user = await db.User.findOne({
-        where: { username: username },
-        raw: true
-    })
+    const user = await getUserByUsername(username)
     if (!user) {
         let err = new Error()
         err.code = StatusCodes.UNAUTHORIZED
@@ -96,7 +95,7 @@ const deleteUser = async (token, user_id) => {
         throw err
     }
     const delete_user = await getUserById(user_id)
-    if (!delete_user) {
+    if (delete_user == null) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Account does not exist.'
