@@ -1,8 +1,8 @@
 const { StatusCodes } = require('http-status-codes')
 
 const { db } = require('../models')
-const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT } = require('../utils/constant')
-const { route } = require('../routes/auth')
+const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT, ROLE_CUSTOMER, ROLE_HEADQUARTERS } = require('../utils/constant')
+const { decodeToken} = require('../utils/jwt')
 
 const getBranchById = async (branch_id) => {
     return await db.Branch.findOne({
@@ -11,7 +11,7 @@ const getBranchById = async (branch_id) => {
     })
 }
 
-const createBranch = async (role, address) => {
+const createBranch = async (token, role, address) => {
     const user = decodeToken(token)
     if (!user) {
         let err = new Error()
@@ -27,7 +27,7 @@ const createBranch = async (role, address) => {
         throw err
     }
 
-    if (!address || !(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
+    if (address == null || !(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -40,7 +40,7 @@ const createBranch = async (role, address) => {
     })
 }
 
-const updateBranch = async (id, role, address) => {
+const updateBranch = async (token, id, role, address) => {
     const user = decodeToken(token)
     if (!user) {
         let err = new Error()
@@ -56,25 +56,33 @@ const updateBranch = async (id, role, address) => {
         throw err
     }
 
-    if (!id || !address || !(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
+    let branch = getBranchById(id)
+    if (id == null || branch == null || address == null) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
         throw err
     }
 
-    await db.Branch.update({ role: role, address: address }, {
-        where: {
-            id: id,
-        },
-    });
+    if (user.role == ROLE_ADMIN) {
+        await db.Branch.update({ role: role, address: address }, {
+            where: {
+                id: id,
+            },
+        });
 
-    return {
-        message: "Branch updated successfully."
+        return {
+            message: "Branch updated successfully."
+        }
     }
+
+    let err = new Error()
+    err.code = StatusCodes.FORBIDDEN
+    err.message = 'You do not have access'
+    throw err
 }
 
-const deleteBranch = async (id) => {
+const deleteBranch = async (token, id) => {
     const user = decodeToken(token)
     if (!user) {
         let err = new Error()
@@ -83,7 +91,8 @@ const deleteBranch = async (id) => {
         throw err
     }
 
-    if (!id || !address || !(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
+    let branch = getBranchById(id)
+    if (id == null || branch == null || address == null) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -100,7 +109,6 @@ const deleteBranch = async (id) => {
         return {
             message: "Branch deleted successfully."
         }
-
     }
 
     let err = new Error()
@@ -111,7 +119,7 @@ const deleteBranch = async (id) => {
 
 const getBranchByRole = async (role) => {
 
-    if (!(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
+    if (!(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT || role == ROLE_CUSTOMER || role == ROLE_HEADQUARTERS)) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'

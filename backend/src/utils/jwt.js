@@ -12,9 +12,9 @@ const generateToken = (dataObj) => {
 
 const decodeToken = (token) => {
     const decoded = JWT.verify(token, PRIVATE_KEY);
-    if ((decoded.iat + decoded.exp)* 1000 < Date.now()) {
-        throw new Error('Token has been expired');
-    }
+    // if ((decoded.iat + decoded.exp)* 1000 < Date.now()) {
+    //     throw new Error('Token has been expired');
+    // }
     return decoded;
 }
 

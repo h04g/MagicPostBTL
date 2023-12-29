@@ -22,7 +22,7 @@ const login = ErrorWrapperHandler(async (req, res, next) => {
                 message: e.message
             })
         }
-        return res.status(StatusCodes.BAD_GATEWAY).json({})
+        return res.status(StatusCodes.BAD_GATEWAY).json({error: e})
     }
 
 })
@@ -38,17 +38,18 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
         const branch_id = req.body.branch_id
         const name = req.body.name
         const token = req.cookies.access_token
-        const message = await authService.createUser(token, username, role, branch_id, name)
+        const data = await authService.createUser(token, username, role, branch_id, name)
         return res.status(StatusCodes.OK).json({
-            message: message
+            message: data.message
         })
     } catch (e) {
+        console.log(e);
         if (e.code >= 100 && e.code < 600) {
             return res.status(e.code).json({
                 message: e.message
             })
         }
-        return res.status(StatusCodes.BAD_GATEWAY).json({})
+        return res.status(StatusCodes.BAD_GATEWAY).json({error: e})
     }
 })
 
@@ -56,9 +57,9 @@ const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const delete_user_id = req.body.deleteUserId
         const token = req.cookies.access_token
-        const message = await authService.deleteUser(token, delete_user_id)
+        const data = await authService.deleteUser(token, delete_user_id)
         return res.status(StatusCodes.OK).json({
-            message: message
+            message: data.message
         })
     } catch (e) {
         if (e.code >= 100 && e.code < 600) {
@@ -76,7 +77,6 @@ const getUsers = ErrorWrapperHandler(async (req, res, next) => {
         const data = await authService.getUsers(token)
         return res.status(StatusCodes.OK).json({
             data: data
-
         })
     } catch (e) {
         console.log(e);
