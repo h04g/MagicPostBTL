@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('transport', {
+        return queryInterface.createTable('transports', {
             id: {
                 type: DataTypes.UUID,
                 default: DataTypes.UUIDV4,
@@ -10,22 +10,22 @@ module.exports = {
             },
             shipping_order_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             receiving_branch_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             receiving_time: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.DATE,
             },
             export_branch_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             export_time: {
-                allowNull: true,
+                allowNull: false,
                 type: DataTypes.DATE,
             },
             created_at: {
@@ -39,6 +39,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('transport');
+        return queryInterface.dropTable('transports');
     }
 }

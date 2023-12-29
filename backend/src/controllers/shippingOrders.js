@@ -42,7 +42,7 @@ const createShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
 
 const updateStatus = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const id = req.body.id
+        const id = req.query.id
         const status = req.body.status
         const token = req.cookies.access_token
         const data = await shippingOrdersService.updateStatus(token, id, status)

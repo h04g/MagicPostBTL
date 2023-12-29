@@ -1,11 +1,10 @@
 const { StatusCodes } = require('http-status-codes')
 const { ROLE_ADMIN, ROLE_TRANSACTION_POINT_MANAGER, ROLE_TRANSACTION_POINT_STAFF, ROLE_TRANSIT_POINT_MANAGER, ROLE_TRANSIT_POINT_STAFF, IWGCNBA_1, IWGCNBA_3,
-    IWGCNBA_4, IWGCNBA_5, ROLE_TRANSACTION_POINT, SHIPPING_ORDERS_NEW, VAT, PRODUCT_TYPE_COMMODITY, PRODUCT_TYPE_DOCUMENT, SHIPPING_ORDERS_TRANSPORTED, SHIPPING_ORDERS_DELIVERED, SHIPPING_ORDERS_CANCELLED, SHIPPING_ORDERS_REFUNDING, SHIPPING_ORDERS_REFUNDED } = require('../utils/constant')
+    IWGCNBA_4, IWGCNBA_5, ROLE_TRANSACTION_POINT, SHIPPING_ORDERS_NEW, VAT, PRODUCT_TYPE_COMMODITY, PRODUCT_TYPE_DOCUMENT, SHIPPING_ORDERS_TRANSPORTED, SHIPPING_ORDERS_DELIVERED, SHIPPING_ORDERS_CANCELLED, SHIPPING_ORDERS_REFUNDING, SHIPPING_ORDERS_REFUNDED, ROLE_CUSTOMER } = require('../utils/constant')
 
 const { db } = require('../models')
-const { decodeToken, generateToken } = require('../utils/jwt')
-const { hash, compare } = require('../utils/bcrypt')
-const { getBranchById } = require('./branch')
+const { decodeToken} = require('../utils/jwt')
+const { getBranchById, getBranchByRole } = require('./branch')
 
 const createShippingOrders = async (token, sender_name, sender_address, sender_phone_number,
     receiver_name, receiver_address, receiver_phone_number, receiver_postal_id, product_type, exceptional_service, iwgcnba,
@@ -75,38 +74,59 @@ const createShippingOrders = async (token, sender_name, sender_address, sender_p
     let vat_fee = (main_charge + surcharge + expenses_gygt) * VAT
     let total_fare = main_charge + surcharge + expenses_gygt + vat_fee + other_revenue;
     let total_revenue = cod + receiver_other_revenue;
+    const t = await db.sequelize.transaction();
+    try {
+        let shippingOrders = await db.ShippingOrders.create({
+            staff_id: user.id,
+            sender_name: sender_name,
+            sender_address: sender_address,
+            sender_phone_number: sender_phone_number,
+            sender_postal_id: user.branch_id,
+            receiver_name: receiver_name,
+            receiver_address: receiver_address,
+            receiver_phone_number: receiver_phone_number,
+            receiver_postal_id: receiver_postal_id,
+            product_type: product_type,
+            exceptional_service: exceptional_service,
+            iwgcnba: iwgcnba,
+            weigh: weigh,
+            convert_weigh: convert_weigh,
+            node: node,
+            status: SHIPPING_ORDERS_NEW,
+            delivery_time: null,
+            main_charge: main_charge,
+            surcharge: surcharge,
+            expenses_gygt: expenses_gygt,
+            vat_fee: vat_fee,
+            total_fare: total_fare,
+            other_revenue: other_revenue,
+            cod: cod,
+            receiver_other_revenue: receiver_other_revenue,
+            total_revenue: total_revenue,
+        }, { transaction: t })
 
-    await db.ShippingOrders.create({
-        staff_id: user.id,
-        sender_name: sender_name,
-        sender_address: sender_address,
-        sender_phone_number: sender_phone_number,
-        sender_postal_id: user.branch_id,
-        receiver_name: receiver_name,
-        receiver_address: receiver_address,
-        receiver_phone_number: receiver_phone_number,
-        receiver_postal_id: receiver_postal_id,
-        product_type: product_type,
-        exceptional_service: exceptional_service,
-        iwgcnba: iwgcnba,
-        weigh: weigh,
-        convert_weigh: convert_weigh,
-        node: node,
-        status: SHIPPING_ORDERS_NEW,
-        delivery_time: null,
-        main_charge: main_charge,
-        surcharge: surcharge,
-        expenses_gygt: expenses_gygt,
-        vat_fee: vat_fee,
-        total_fare: total_fare,
-        other_revenue: other_revenue,
-        cod: cod,
-        receiver_other_revenue: receiver_other_revenue,
-        total_revenue: total_revenue,
-    })
+        let customer = await getBranchByRole(ROLE_CUSTOMER)
+        if(customer[0] == null){
+            let err = new Error()
+            err.code = StatusCodes.NOT_FOUND
+            err.message = 'Missing branch with role = 0 for customer in database'
+            throw err
+        }
+        await db.Transport.create({
+            shipping_order_id: shippingOrders.id,
+            receiving_branch_id: user.branch_id,
+            receiving_time: new Date(),
+            export_branch_id: customer[0].id,
+            export_time: new Date(),
+        }, { transaction: t })
 
-    return {
-        message: "ShippingOrders successfully created"
+        await t.commit();
+        return {
+            message: "ShippingOrders successfully created"
+        }
+    } catch (error) {
+        await t.rollback();
+        throw error
     }
 }
 
@@ -118,9 +138,8 @@ const updateStatus = async (token, id, status) => {
         err.message = 'Invalid token'
         throw err
     }
-    const shippingOrder = await getShippingOrdersById(id)
 
-    if (id == null || shippingOrder == null || (status != SHIPPING_ORDERS_NEW && status != SHIPPING_ORDERS_TRANSPORTED && status != SHIPPING_ORDERS_DELIVERED
+    if (id == null || (status != SHIPPING_ORDERS_NEW && status != SHIPPING_ORDERS_TRANSPORTED && status != SHIPPING_ORDERS_DELIVERED
         && status != SHIPPING_ORDERS_CANCELLED && status != SHIPPING_ORDERS_REFUNDING && status != SHIPPING_ORDERS_REFUNDED)) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
@@ -128,6 +147,13 @@ const updateStatus = async (token, id, status) => {
         throw err
     }
 
+    const shippingOrder = await getShippingOrdersById(id)
+    if (shippingOrder == null){
+        let err = new Error()
+        err.code = StatusCodes.NOT_FOUND
+        err.message = 'ShippingOrder does not exist'
+        throw err
+    }
     if (status <= shippingOrder.status) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST

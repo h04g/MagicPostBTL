@@ -1,8 +1,8 @@
 const { StatusCodes } = require('http-status-codes')
 
 const { db } = require('../models')
-const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT } = require('../utils/constant')
-const { route } = require('../routes/auth')
+const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT, ROLE_CUSTOMER, ROLE_HEADQUARTERS } = require('../utils/constant')
+const { decodeToken} = require('../utils/jwt')
 
 const getBranchById = async (branch_id) => {
     return await db.Branch.findOne({
@@ -119,7 +119,7 @@ const deleteBranch = async (token, id) => {
 
 const getBranchByRole = async (role) => {
 
-    if (!(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT)) {
+    if (!(role == ROLE_TRANSACTION_POINT || role == ROLE_TRANSIT_POINT || role == ROLE_CUSTOMER || role == ROLE_HEADQUARTERS)) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'

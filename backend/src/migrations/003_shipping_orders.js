@@ -10,7 +10,7 @@ module.exports = {
             },
             staff_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             sender_name: {
                 allowNull: false,
@@ -26,7 +26,7 @@ module.exports = {
             },
             sender_postal_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             receiver_name: {
                 allowNull: false,
@@ -42,7 +42,7 @@ module.exports = {
             },
             receiver_postal_id: {
                 allowNull: false,
-                type: DataTypes.INTEGER(11),
+                type: DataTypes.UUID,
             },
             product_type: {
                 allowNull: false,

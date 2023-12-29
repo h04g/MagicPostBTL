@@ -87,6 +87,14 @@ module.exports = {
             is_unused: false,
             created_at: new Date(),
             updated_at: new Date()
+        },
+        {
+            id: '12',
+            role: 0,
+            address: 'khách hàng',
+            is_unused: false,
+            created_at: new Date(),
+            updated_at: new Date()
         }]);
     },
     down: (queryInterface, Sequelize) => {

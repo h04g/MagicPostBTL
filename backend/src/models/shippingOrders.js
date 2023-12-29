@@ -8,7 +8,7 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         },
         staff_id: {
             field: 'staff_id',
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.UUID,
         },
         sender_name: {
             field: 'sender_name',
@@ -24,7 +24,7 @@ const ShippingOrdersModel = (sequelize, DataTypes) => {
         },
         sender_postal_id: {
             field: 'sender_postal_id',
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.UUID,
         },
         receiver_name: {
             field: 'receiver_name',
