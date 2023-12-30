@@ -1,0 +1,51 @@
+export const TeamsData = [
+  {
+    id: 1,
+    name: "Điểm giao dịch 1",
+    email: "1@example.com",
+    shipped: 1,
+    shipping: 2,
+    image: "/images/avatar/avatar-2.jpg",
+  },
+  {
+    id: 2,
+    name: "Điểm giao dịch 2",
+    email: "2@example.com",
+    shipped: 1,
+    shipping: 14,
+    image: "/images/avatar/avatar-1.jpg",
+  },
+  {
+    id: 3,
+    name: "Điểm giao dịch 3",
+    email: "3@gmail.com",
+    shipped: 6,
+    shipping: 1,
+    image: "/images/avatar/avatar-3.jpg",
+  },
+  {
+    id: 4,
+    name: "Điểm tập kết 1",
+    email: "a1@example.com",
+    shipped: 8,
+    shipping: 67,
+    image: "/images/avatar/avatar-4.jpg",
+  },
+  {
+    id: 3,
+    name: "Điểm tập kết 2",
+    email: "p2@example.com",
+    shipped: 87,
+    shipping: 12,
+    image: "/images/avatar/avatar-5.jpg",
+  },
+  {
+    id: 4,
+    name: "Điểm tập kết 3",
+    email: "d3@example.com",
+    shipped: 65,
+    shipping: 23,
+    image: "/images/avatar/avatar-6.jpg",
+  },
+];
+export default TeamsData;
