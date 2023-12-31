@@ -3,12 +3,28 @@
 // import node module libraries
 import { Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
 import Link from 'next/link';
+import { useState } from 'react';
 
 // import hooks
 import useMounted from 'hooks/useMounted';
+import { loginAPI } from 'api';
 
 const SignIn = () => {
   const hasMounted = useMounted();
+
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    loginAPI({ "username":userName, password }).then((res) => {
+      if (res.status == 200) {
+        console.log(res.data);
+        localStorage.setItem("token", res.data.accessToken);
+        window.location.href = "/";
+      }
+    });
+  }
+
   return (
     <Row className="align-items-center justify-content-center g-0 min-vh-100">
       <Col xxl={4} lg={6} md={8} xs={12} className="py-8 py-xl-0">
@@ -26,13 +42,17 @@ const SignIn = () => {
                 {/* Username */}
                 <Form.Group className="mb-3" controlId="username">
                   <Form.Label>Username or email</Form.Label>
-                  <Form.Control type="email" name="username" placeholder="Enter address here" required="" />
+                  <Form.Control type="name" name="username" placeholder="Enter address here" required="" value={userName} onChange={(e) => {
+                    setUserName(e.target.value);
+                  }} />
                 </Form.Group>
 
                 {/* Password */}
                 <Form.Group className="mb-3" controlId="password">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" name="password" placeholder="**************" required="" />
+                  <Form.Control type="password" name="password" placeholder="**************" required="" value = {password} onChange={(e) => {
+                    setPassword(e.target.value);
+                  }} />
                 </Form.Group>
 
                 {/* Checkbox */}
@@ -45,7 +65,7 @@ const SignIn = () => {
                 <div>
                   {/* Button */}
                   <div className="d-grid">
-                    <Button variant="primary" type="submit">Sign In</Button>
+                    <Button variant="primary" onClick={handleLogin} >Sign In</Button>
                   </div>
                   <div className="d-md-flex justify-content-between mt-4">
                     <div className="mb-2 mb-md-0">

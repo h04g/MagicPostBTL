@@ -18,6 +18,8 @@ import RecentFromBlog from "sub-components/profile/RecentFromBlog";
 import CurrentPlan from "sub-components/billing/CurrentPlan";
 import BillingAddress from "sub-components/billing/BillingAddress";
 
+// sub components for /pages/createuser
+
 export {
   ActiveProjects,
   TasksPerformance,

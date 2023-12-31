@@ -22,6 +22,50 @@ import { v4 as uuid } from "uuid";
  *  ( Use title : value to specify group title  e.g. COMPONENTS , DOCUMENTATION that we did here. )
  *
  */
+// const user = localStorage.getItem("user");
+// function checkRole (user) {
+//   let u = JSON.parse(user);
+//   if (u.role == 5) {
+//     return true;
+//   }
+// }
+
+export const AdminDashboardMenu = [
+];
+/**
+ * {
+      label: 'Admin',
+      value: 5
+    },
+    {
+      label: 'Transaction Point Manager',
+      value: 1
+    },
+    {
+      label: 'Transaction Point Staff',
+      value: 2
+    },
+    {
+      label: 'Transit Point Manager',
+      value: 3
+    },
+    {
+      label: 'Transit Point Staff',
+      value: 4
+    }
+ */
+export const TransactionPointManagerDashboardMenu = [
+];
+
+
+export const TransactionPointStaffDashboardMenu = [
+];
+
+export const TransitPointManagerDashboardMenu = [
+];
+
+export const TransitPointStaffDashboardMenu = [
+];
 
 export const DashboardMenu = [
   {
@@ -29,6 +73,12 @@ export const DashboardMenu = [
     title: "Dashboard",
     icon: "home",
     link: "/",
+  },
+ {
+    id: uuid(),
+    title: "create new User",
+    icon : "user",
+    link: "/pages/createuser",
   },
   {
     id: uuid(),

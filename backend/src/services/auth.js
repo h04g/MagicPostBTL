@@ -83,6 +83,7 @@ const login = async (username, password) => {
     return {
         accessToken,
         refreshToken: '',
+        user
     }
 }
 

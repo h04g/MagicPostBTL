@@ -7,10 +7,10 @@ const login = ErrorWrapperHandler(async (req, res, next) => {
         const username = req.body.username
         const password = req.body.password
         const tokens = await authService.login(username, password)
-        res.cookie('access_token', `Bearer ${tokens.accessToken}`, {
+        res.cookie('access_token', tokens.accessToken, {
             path: '/',
             httpOnly: true,
-            secure: true,
+            secure: false,
             maxAge: 86400 * 1000,
         });
         return res.status(StatusCodes.OK).json({
@@ -32,12 +32,15 @@ const logout = ErrorWrapperHandler((req, res, next) => {
 })
 
 const createUser = ErrorWrapperHandler(async (req, res, next) => {
+    console.log("a");
     try {
         const username = req.body.username
         const role = req.body.role
         const branch_id = req.body.branch_id
         const name = req.body.name
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
+        console.log(token);
+        console.log(req.headers.authorization);
         const data = await authService.createUser(token, username, role, branch_id, name)
         return res.status(StatusCodes.OK).json({
             message: data.message
