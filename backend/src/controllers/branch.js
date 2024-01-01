@@ -6,7 +6,7 @@ const createBranch = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const role = req.body.role
         const address = req.body.address
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const branch = await branchService.createBranch(token, role, address)
         return res.status(StatusCodes.OK).json({
             data : {branch : branch}
@@ -27,7 +27,7 @@ const updateBranch = ErrorWrapperHandler(async (req, res, next) => {
         const id = req.body.id
         const role = req.body.role
         const address = req.body.address
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await branchService.updateBranch(token, id, role, address)
         return res.status(StatusCodes.OK).json({
             message: data.message
@@ -45,7 +45,7 @@ const updateBranch = ErrorWrapperHandler(async (req, res, next) => {
 const deleteBranch = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const id = req.query.deleteBranchId
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await branchService.deleteBranch(token, id);
         return res.status(StatusCodes.OK).json({
             message: data.message

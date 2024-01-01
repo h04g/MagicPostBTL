@@ -8,6 +8,14 @@ import 'styles/theme.scss';
 // import sub components
 import NavbarVertical from '/layouts/navbars/NavbarVertical';
 import NavbarTop from '/layouts/navbars/NavbarTop';
+import {
+	useQuery,
+	useMutation,
+	useQueryClient,
+	QueryClient,
+	QueryClientProvider,
+  } from '@tanstack/react-query'
+  const queryClient = new QueryClient()
 
 export default function DashboardLayout({ children }) {
 	const [showMenu, setShowMenu] = useState(true);
@@ -16,6 +24,7 @@ export default function DashboardLayout({ children }) {
 	};
 
 	return (
+		<QueryClientProvider client = {queryClient}>
 		<div id="db-wrapper" className={`${showMenu ? '' : 'toggled'}`}>
 			<div className="navbar-vertical navbar">
 				<NavbarVertical
@@ -35,5 +44,6 @@ export default function DashboardLayout({ children }) {
 				{children}
 			</div>
 		</div>
+		</QueryClientProvider>
 	)
 }
