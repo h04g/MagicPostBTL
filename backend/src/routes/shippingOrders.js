@@ -6,5 +6,5 @@ router.post('/create', shippingOrdersController.createShippingOrders)
 router.post('/updateStatus', shippingOrdersController.updateStatus)
 router.post('/export', transportController.exportShippingOrders)
 router.post('/import', transportController.importShippingOrders)
-router.get('/', shippingOrdersController.getShippingOrdersById)
+router.get('/', shippingOrdersController.getShippingOrders)
 module.exports = router

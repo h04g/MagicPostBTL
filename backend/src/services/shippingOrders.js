@@ -1,10 +1,12 @@
 const { StatusCodes } = require('http-status-codes')
 const { ROLE_ADMIN, ROLE_TRANSACTION_POINT_MANAGER, ROLE_TRANSACTION_POINT_STAFF, ROLE_TRANSIT_POINT_MANAGER, ROLE_TRANSIT_POINT_STAFF, IWGCNBA_1, IWGCNBA_3,
-    IWGCNBA_4, IWGCNBA_5, ROLE_TRANSACTION_POINT, SHIPPING_ORDERS_NEW, VAT, PRODUCT_TYPE_COMMODITY, PRODUCT_TYPE_DOCUMENT, SHIPPING_ORDERS_TRANSPORTED, SHIPPING_ORDERS_DELIVERED, SHIPPING_ORDERS_CANCELLED, SHIPPING_ORDERS_REFUNDING, SHIPPING_ORDERS_REFUNDED, ROLE_CUSTOMER } = require('../utils/constant')
+    IWGCNBA_4, IWGCNBA_5, ROLE_TRANSACTION_POINT, VAT, PRODUCT_TYPE_COMMODITY, PRODUCT_TYPE_DOCUMENT, SHIPPING_ORDERS_TRANSPORTING, SHIPPING_ORDERS_DELIVERED, SHIPPING_ORDERS_REFUNDING, SHIPPING_ORDERS_REFUNDED, ROLE_CUSTOMER } = require('../utils/constant')
 
 const { db } = require('../models')
-const { decodeToken} = require('../utils/jwt')
+const { decodeToken } = require('../utils/jwt')
 const { getBranchById, getBranchByRole } = require('./branch')
+const { getUsersByBranchId } = require('./auth')
+const { getTransportByShippingOrdersID } = require('./transport')
 
 const createShippingOrders = async (token, sender_name, sender_address, sender_phone_number,
     receiver_name, receiver_address, receiver_phone_number, receiver_postal_id, product_type, exceptional_service, iwgcnba,
@@ -92,7 +94,7 @@ const createShippingOrders = async (token, sender_name, sender_address, sender_p
             weigh: weigh,
             convert_weigh: convert_weigh,
             node: node,
-            status: SHIPPING_ORDERS_NEW,
+            status: SHIPPING_ORDERS_TRANSPORTING,
             delivery_time: null,
             main_charge: main_charge,
             surcharge: surcharge,
@@ -106,7 +108,7 @@ const createShippingOrders = async (token, sender_name, sender_address, sender_p
         }, { transaction: t })
 
         let customer = await getBranchByRole(ROLE_CUSTOMER)
-        if(customer[0] == null){
+        if (customer[0] == null) {
             let err = new Error()
             err.code = StatusCodes.NOT_FOUND
             err.message = 'Missing branch with role = 0 for customer in database'
@@ -139,8 +141,8 @@ const updateStatus = async (token, id, status) => {
         throw err
     }
 
-    if (id == null || (status != SHIPPING_ORDERS_NEW && status != SHIPPING_ORDERS_TRANSPORTED && status != SHIPPING_ORDERS_DELIVERED
-        && status != SHIPPING_ORDERS_CANCELLED && status != SHIPPING_ORDERS_REFUNDING && status != SHIPPING_ORDERS_REFUNDED)) {
+    if (id == null || (status != SHIPPING_ORDERS_TRANSPORTING && status != SHIPPING_ORDERS_DELIVERED
+        && status != SHIPPING_ORDERS_REFUNDING && status != SHIPPING_ORDERS_REFUNDED)) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -148,7 +150,7 @@ const updateStatus = async (token, id, status) => {
     }
 
     const shippingOrder = await getShippingOrdersById(id)
-    if (shippingOrder == null){
+    if (shippingOrder == null) {
         let err = new Error()
         err.code = StatusCodes.NOT_FOUND
         err.message = 'ShippingOrder does not exist'
@@ -160,11 +162,19 @@ const updateStatus = async (token, id, status) => {
         err.message = 'Cannot update status'
         throw err
     }
-    await db.ShippingOrders.update({ status: status, staff_id: user.id }, {
-        where: {
-            id: id,
-        },
-    });
+    if (status == SHIPPING_ORDERS_REFUNDED || status == SHIPPING_ORDERS_DELIVERED) {
+        await db.ShippingOrders.update({ status: status, staff_id: user.id, delivery_time: new Date() }, {
+            where: {
+                id: id,
+            },
+        });
+    } else {
+        await db.ShippingOrders.update({ status: status, staff_id: user.id }, {
+            where: {
+                id: id,
+            },
+        });
+    }
 
     return {
         message: "ShippingOrders successfully updated"
@@ -176,6 +186,70 @@ const getShippingOrdersById = async (id) => {
     return await db.ShippingOrders.findByPk(id)
 }
 
+const getShippingOrdersByBrandhIdAndStatus = async (token, status) => {
+
+    const user = decodeToken(token)
+    if (user == null) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Invalid token'
+        throw err
+    }
+
+    if (status != SHIPPING_ORDERS_TRANSPORTING && status != SHIPPING_ORDERS_DELIVERED
+        && status != SHIPPING_ORDERS_REFUNDING && status != SHIPPING_ORDERS_REFUNDED) {
+        let err = new Error()
+        err.code = StatusCodes.BAD_REQUEST
+        err.message = 'Invalid data'
+        throw err
+    }
+
+    let data = []
+
+    if (status == SHIPPING_ORDERS_TRANSPORTING || status == SHIPPING_ORDERS_REFUNDING) {
+        const staff = await getUsersByBranchId(user.branch_id)
+        const staff_Id = staff.map(employee => employee.id);
+        let shippingOrders = await db.ShippingOrders.findAll({
+            where: {
+                staff_id: staff_Id,
+                status: status,
+            },
+            order: [
+                ['updated_at', 'DESC'],
+            ]
+        });
+        for (const shippingOrder of shippingOrders) {
+            let shipments = await getTransportByShippingOrdersID(shippingOrder.id)
+            if (shipments[0].receiving_branch_id == user.branch_id) {
+                data.push(shippingOrder)
+            }
+        }
+    }
+    if (status == SHIPPING_ORDERS_DELIVERED) {
+        data = await db.ShippingOrders.findAll({
+            where: {
+                receiver_postal_id: user.branch_id,
+                status: status,
+            },
+            order: [
+                ['delivery_time', 'DESC'],
+            ]
+        });
+    }
+    if (status == SHIPPING_ORDERS_REFUNDED) {
+        data = await db.ShippingOrders.findAll({
+            where: {
+                sender_postal_id: user.branch_id,
+                status: status,
+            },
+            order: [
+                ['delivery_time', 'DESC'],
+            ]
+        });
+    }
+    return data
+}
+
 function isPhoneNumber(input) {
     var phoneNumberPattern = /^0\d{9}$/;
     return phoneNumberPattern.test(input);
@@ -184,5 +258,6 @@ function isPhoneNumber(input) {
 module.exports = {
     createShippingOrders,
     updateStatus,
-    getShippingOrdersById
+    getShippingOrdersById,
+    getShippingOrdersByBrandhIdAndStatus
 }

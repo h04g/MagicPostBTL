@@ -6,7 +6,7 @@ const exportShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const id = req.query.id
         const receiving_branch_id = req.body.receiving_branch_id
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await transportService.exportShippingOrders(token, id, receiving_branch_id)
         return res.status(StatusCodes.OK).json({
             data : data.message
@@ -26,7 +26,7 @@ const exportShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
 const importShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const id = req.query.id
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await transportService.importShippingOrders(token, id)
         console.log(data);
         return res.status(StatusCodes.OK).json({

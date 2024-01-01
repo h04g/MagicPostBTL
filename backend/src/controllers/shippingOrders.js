@@ -23,7 +23,7 @@ const createShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
         const other_revenue = req.body.other_revenue
         const cod = req.body.cod
         const receiver_other_revenue = req.body.receiver_other_revenue
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await shippingOrdersService.createShippingOrders(token, sender_name, sender_address, sender_phone_number, 
             receiver_name, receiver_address, receiver_phone_number, receiver_postal_id, product_type, exceptional_service, iwgcnba, 
             weigh, convert_weigh, node, main_charge, surcharge, expenses_gygt, other_revenue, cod, receiver_other_revenue)
@@ -44,7 +44,7 @@ const updateStatus = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const id = req.query.id
         const status = req.body.status
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await shippingOrdersService.updateStatus(token, id, status)
         return res.status(StatusCodes.OK).json({
             message: data.message
@@ -59,10 +59,19 @@ const updateStatus = ErrorWrapperHandler(async (req, res, next) => {
     }
 })
 
-const getShippingOrdersById = ErrorWrapperHandler(async (req, res, next) => {
+const getShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const id = req.query.id
-        const data = await shippingOrdersService.getShippingOrdersById(id)
+        const status =  req.query.status
+        const token = req.headers.authorization.split(' ')[1];
+        let data
+        if( id != null){
+            const data = await shippingOrdersService.getShippingOrdersById(id)
+        } else
+        if( status != null){
+        data = await shippingOrdersService.getShippingOrdersByBrandhIdAndStatus(token, status)
+        }
+        
         return res.status(StatusCodes.OK).json({
             data: data
         })
@@ -79,5 +88,5 @@ const getShippingOrdersById = ErrorWrapperHandler(async (req, res, next) => {
 module.exports = {
     createShippingOrders,
     updateStatus,
-    getShippingOrdersById
+    getShippingOrders
 }

@@ -118,7 +118,6 @@ const importShippingOrders = async (token, id) => {
 }
 
 const getTransportByShippingOrdersID = async (id) => {
-    console.log('"' + id + '"')
     return await db.Transport.findAll({
         where: {
             shipping_order_id: id,
@@ -131,5 +130,6 @@ const getTransportByShippingOrdersID = async (id) => {
 
 module.exports = {
     exportShippingOrders,
-    importShippingOrders
+    importShippingOrders,
+    getTransportByShippingOrdersID
 }
