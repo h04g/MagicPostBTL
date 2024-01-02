@@ -93,7 +93,7 @@ const deleteBranch = async (token, id) => {
     }
 
     let branch = getBranchById(id)
-    if (id == null || branch == null || address == null) {
+    if (id == null || branch == null) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
