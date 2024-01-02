@@ -14,31 +14,6 @@ import { useEffect, useState } from "react";
 import axios from 'axios'
 import { API_URL } from "api";
 
-/**
- * create one form for this body : 
- * {
-    "sender_name": "sender_name", 
-    "sender_address": "sender_address", 
-    "sender_phone_number": "0123456789", 
-    "receiver_name": "receiver_name",
-    "receiver_address" : "receiver_address", 
-    "receiver_phone_number": "0123456799", 
-    "receiver_postal_id": 8, 
-    "product_type": 1, 
-    "exceptional_service": "exceptional_service", 
-    "iwgcnba": 1, 
-    "weigh": 30, 
-    "convert_weigh": 0, 
-    "node": "node", 
-    "main_charge": 1, 
-    "surcharge": 2, 
-    "expenses_gygt": 3, 
-    "other_revenue": 5, 
-    "cod": 11, 
-    "receiver_other_revenue": 12
-}
- *  */ 
-
 
 const Order = () => {
   const hasMounted = useMounted();
@@ -98,6 +73,7 @@ const Order = () => {
     ).then((res) => {
       if (res.status === 200) {
         alert('Tạo đơn hàng thành công');
+        window.location.reload();
       }
       console.log('status');
       console.error(res.status);
@@ -281,7 +257,7 @@ const Order = () => {
                     <div>
                       {/* Button */}
                       <div className="d-grid">
-                        <Button variant="primary" onClick={createOrder} type="submit" >Tạo đơn hàng</Button>
+                        <Button variant="primary" onClick={createOrder}  >Tạo đơn hàng</Button>
                       </div>
                     </div>
                   </Form>

@@ -13,25 +13,25 @@ import { Fragment } from "react";
 // import widget as custom components
 import { PageHeading } from "widgets";
 // import sub components
-import { Row, Col, Card, Form, Button, Image ,Container,Table } from 'react-bootstrap';
-import Link from 'next/link';
+import { Row, Card, Button ,Container,Table,Form } from 'react-bootstrap';
+
 
 // import hooks
 import useMounted from 'hooks/useMounted';
 
 import axios from 'axios'
 import { API_URL } from "api";
-//   const queryClient = new queryClient();
+
 export async function getTodos (role = 1) {
-return await axios.get(`${API_URL}/branch?role=1`);
+return await axios.get(`${API_URL}/branch?role=${role}`);
 }
 
-
 const listBranch = () => {
-    const hasMounted = useMounted();
+const hasMounted = useMounted();
 const queryClient = useQueryClient();
-const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
-console.log(query?.data?.data?.data);
+const [role,setRole] = useState(1);
+const query = useQuery({ queryKey: ['todos', role], queryFn: () => getTodos(role) });
+
 if (query.isLoading) {
 return <div>IS LOADING</div>
 }
@@ -46,12 +46,17 @@ return (
     <PageHeading heading="danh sach chi nhanh" />
     
         <Row>
-          {/* Current Plan Overview */}
           <Card>
             <Card.Body>
-                {
-
-   ( hasMounted && !query.isLoading  )  && <Table>
+                
+                  <Form>
+                    <Form.Select onChange={(e)=>{setRole(e.target.value)}}>
+                      <option value= {1} >Transaction Point</option>
+                      <option value= {2} >Transit Point</option>
+                      <option value= {3} >Head Quater</option>
+                    </Form.Select>
+                  </Form>
+  { ( hasMounted && !query.isLoading  )  && <Table>
   <thead>
     <tr>
       <th>id</th>
