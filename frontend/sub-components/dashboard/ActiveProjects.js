@@ -56,9 +56,9 @@ const handleExport = (e) => {
   if (!token ) {
     return; 
   }
-  axios.post(`${API_URL}/shippingOrders/export?branch_id=${idExport}`
+  axios.post(`${API_URL}/shippingOrders/export?id=${idExport}`
   ,{
-    "receiving_branch_id" : branchId
+    "receiving_branch_id" : parseInt(branchId)
   },{
     headers:{
     'Content-Type': 'application/json', // Common header for JSON data
