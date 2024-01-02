@@ -82,6 +82,12 @@ export const DashboardMenu = [
   },
   {
     id: uuid(),
+    title: "get User",
+    icon : "user",
+    link: "/pages/getuser",
+  },
+  {
+    id: uuid(),
     title: "create new Order",
     icon : "shopping-cart",
     link: "/pages/createorder",
