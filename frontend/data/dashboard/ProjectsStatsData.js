@@ -25,7 +25,7 @@ export const ProjectsStats = [
   {
     id: 4,
     title: "Đã giao thành công",
-    value: "76%",
+    value: "66%",
     icon: <Bullseye size={18} />,
     
   },

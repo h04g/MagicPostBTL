@@ -86,8 +86,26 @@ const getShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
     }
 })
 
+const getImportShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        let data = await shippingOrdersService.getImportShippingOrders(token)
+        return res.status(StatusCodes.OK).json({
+            data: data
+        })
+    } catch (e) {
+        if (e.code >= 100 && e.code < 600) {
+            return res.status(e.code).json({
+                message: e.message
+            })
+        }
+        return res.status(StatusCodes.BAD_GATEWAY).json({error: e})
+    }
+})
+
 module.exports = {
     createShippingOrders,
     updateStatus,
-    getShippingOrders
+    getShippingOrders,
+    getImportShippingOrders
 }

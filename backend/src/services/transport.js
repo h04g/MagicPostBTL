@@ -2,7 +2,6 @@ const { StatusCodes } = require('http-status-codes')
 
 const { db } = require('../models')
 const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT, ROLE_CUSTOMER, ROLE_HEADQUARTERS } = require('../utils/constant')
-const { getShippingOrdersById } = require('./shippingOrders')
 const { decodeToken } = require('../utils/jwt')
 const { getBranchById } = require('./branch')
 
@@ -15,7 +14,8 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
         throw err
     }
 
-    const shippingOrder = await getShippingOrdersById(id)
+    const shippingOrder = await db.ShippingOrders.findByPk(id)
+    console.log(id);
     if (shippingOrder == null) {
         let err = new Error()
         err.code = StatusCodes.NOT_FOUND
@@ -23,8 +23,8 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
         throw err
     }
 
-    let receiving_branch = getBranchById(receiving_branch_id)
-    if (id == null || receiving_branch == null) {
+    let receiving_branch = await getBranchById(receiving_branch_id)
+    if (id == null || receiving_branch == null || receiving_branch_id == user.branch_id) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -42,6 +42,12 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
     const t = await db.sequelize.transaction();
     try {
 
+        await db.Transport.destroy({
+            where: {
+                shipping_order_id: id
+            },
+        })
+        
         await db.Transport.create({
             shipping_order_id: id,
             receiving_branch_id: receiving_branch_id,
@@ -67,7 +73,6 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
 
 const importShippingOrders = async (token, id) => {
     const user = decodeToken(token)
-    console.log(user)
     if (!user) {
         let err = new Error()
         err.code = StatusCodes.UNAUTHORIZED
@@ -75,7 +80,7 @@ const importShippingOrders = async (token, id) => {
         throw err
     }
 
-    const shippingOrder = await getShippingOrdersById(id)
+    const shippingOrder = await db.ShippingOrders.findByPk(id)
     if (shippingOrder == null) {
         let err = new Error()
         err.code = StatusCodes.NOT_FOUND
@@ -84,7 +89,6 @@ const importShippingOrders = async (token, id) => {
     }
 
     let transports = await getTransportByShippingOrdersID(id)
-    console.log(transports);
     if (transports[0].receiving_time != null || transports[0].receiving_branch_id != user.branch_id) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
@@ -93,8 +97,6 @@ const importShippingOrders = async (token, id) => {
     }
     const t = await db.sequelize.transaction();
     try {
-
-
         await db.Transport.update({ receiving_time: new Date() }, {
             where: {
                 id: transports[0].id,

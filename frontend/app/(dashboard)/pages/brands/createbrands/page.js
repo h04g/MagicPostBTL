@@ -92,32 +92,6 @@ const listBranch = () => {
 const createBranch =  () => {
     const [roleBranch,setRoleBranch] = useState(1);
     const [address,setAddress] = useState("");
-    const hasMounted = useMounted();
-
-
-    const [role,setRole] = useState(1);
-    const [loading,setLoading] = useState(false);
-    const [listBranch,setListBranch] = useState([]);
-
-
-    // const listBranch =  axios.get(`${API_URL}/branch?role=${role}`);
-    // const queryClient = useQueryClient()
-    
-    // const query = useQuery('data', () => axios.get(`${API_URL}/branch?role=${role}`).then((res)=>res.data.data));
-    // console.log(query.data);
-
-    // console.log(data);
-
-    // useEffect(async ()=>{
-    //     const  fetchData = async () => {
-    //         axios.get(`${API_URL}/branch?role=${role}`).then((res)=>{
-              
-    //                 setListBranch(res.data.data);
-                
-    //         })
-    //     }
-    //     fetchData();
-    // } ,[]);
 
     const handleCreateBranch = () => {
         const token = localStorage.getItem('token');
