@@ -28,6 +28,16 @@ export const getListOrder = async (status=2) =>{
     });
 }
 
+export const getListImport  =  async () =>{
+  let token = localStorage.getItem('token');
+  return await axios.get(`${API_URL}/shippingOrders/import`,{
+    headers:{
+        'Content-Type': 'application/json', // Common header for JSON data
+        'Authorization': `Bearer ${token}`
+    }
+    });
+}
+
 const ActiveProjects = () => {
   const [show, setShow] = useState(false);
   const handleShow = (id) => {setIdExport(id); setShow(true);};
@@ -37,23 +47,48 @@ const queryClient = useQueryClient();
 const query = useQuery({ queryKey: ['order', status], queryFn: () => getListOrder(status) });
 const [roleBranch,setRoleBranch] = useState(0);
 const [branchDetail ,setBranchDetail] = useState([]);
-const [branchId,setBranchId] = useState(null);
+const [branchId,setBranchId] = useState(0);
 const [idExport,setIdExport] = useState(null);
 const [showModelStatus,setShowModelStatus] = useState(false);
 const [updateStatus,setUpdateStatus] = useState(null);
 
 const handleClose = () => {setShow(false);setShowModelStatus(false)};
 
+const handleImport = (id) => {
+  let token = localStorage.getItem('token');
+  if (!token ) {
+    return; 
+  }
+  axios.post(`${API_URL}/shippingOrders/import?id=${id}`
+  ,{
+    "id" :id
+  },{
+    headers:{
+    'Content-Type': 'application/json', // Common header for JSON data
+    'Authorization': `Bearer ${token}`
+    }
+  }).then((res)=>{
+    if (res.status == 200) {
+      alert('Import successs');
+      window.location.reload();
+    }
 
+  });
+}
 const handleUpdateStatus = () => {
   setShowModelStatus(false);
   let token = localStorage.getItem('token');
   if (!token ) {
     return; 
   }
+  if (idExport == 0) {
+    alert("Id export failed");
+    return;
+  }
   axios.post(`${API_URL}/shippingOrders/updateStatus?id=${idExport}`
   ,{
-    "status" : parseInt(updateStatus)
+    "status" : parseInt(updateStatus),
+    "id" :idExport
   },{
     headers:{
     'Content-Type': 'application/json', // Common header for JSON data
@@ -62,32 +97,18 @@ const handleUpdateStatus = () => {
   }).then((res)=>{
     if (res.status == 200) {
       alert('Update successs');
+      window.location.reload();
     }
 
-  });
+  }).catch((err)=>{
+    alert('error');
+    console.error(err);
+  });;
 }
 
 const handleOpenStatusModal = (id) =>{
   setShowModelStatus(true);
   setIdExport(id);
-  // let token = localStorage.getItem('token');
-  // if (!token ) {
-  //   return; 
-  // }
-  // axios.post(`${API_URL}/shippingOrders/updateStatus?id=${id}`
-  // ,{
-  //   "status" : parseInt(status)
-  // },{
-  //   headers:{
-  //   'Content-Type': 'application/json', // Common header for JSON data
-  //   'Authorization': `Bearer ${token}`
-  //   }
-  // }).then((res)=>{
-  //   if (res.status == 200) {
-  //     alert('Update successs');
-  //   }
-
-  // });
  }
 const handleExport = (e) => {
 
@@ -113,8 +134,12 @@ const handleExport = (e) => {
   }).then((res)=>{
     if (res.status == 200) {
       alert('Export successs');
+      window.location.reload();
     }
 
+  }).catch((err)=>{
+    alert('error');
+    console.error(err);
   });
 }
 if (query.isLoading) {
@@ -160,7 +185,7 @@ return <div>error</div>
     }
   }
 
-
+  
   return (
     <>
     <Row className="mt-6">
@@ -298,14 +323,17 @@ return <div>error</div>
             Close
           </Button>
           <Button variant="primary" onClick={handleUpdateStatus}>
-            Export
+            Update Status
           </Button>
         </Modal.Footer>
       </Modal>
+  
       </Col>
     </Row>
     </>
   );
 };
+
+
 
 export default ActiveProjects;

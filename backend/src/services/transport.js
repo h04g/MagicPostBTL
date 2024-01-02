@@ -24,7 +24,8 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
     }
 
     let receiving_branch = await getBranchById(receiving_branch_id)
-    if (id == null || receiving_branch == null || receiving_branch_id == user.branch_id) {
+    console.log({receiving_branch});
+    if (id == null || receiving_branch == null || receiving_branch_id == user.branch_id || receiving_branch_id == 0) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -32,6 +33,7 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
     }
 
     let transports = await getTransportByShippingOrdersID(id)
+    console.log({transports});
     if (transports[0] == null || transports[0].receiving_time == null || transports[0].receiving_branch_id != user.branch_id) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST

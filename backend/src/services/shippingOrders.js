@@ -275,6 +275,7 @@ const getImportShippingOrders = async (token) => {
     const shippingOrders = await db.Transport.findAll({
         where: {
             receiving_branch_id: user.branch_id,
+            receiving_time : null
         },
         order: [
             ['export_time', 'DESC'],

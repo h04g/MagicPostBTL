@@ -27,34 +27,40 @@ implement it later
   const allRoles = [
     {
       label: 'Admin',
-      value: 5
+      value: 5,
+      branchOrder:3
     },
     {
       label: 'Transaction Point Manager',
-      value: 1
+      value: 1,
+      branchOrder:1
     },
     {
       label: 'Transaction Point Staff',
-      value: 2
+      value: 2,
+      branchOrder:1
     },
     {
       label: 'Transit Point Manager',
-      value: 3
+      value: 3,
+      branchOrder:2
     },
     {
       label: 'Transit Point Staff',
-      value: 4
+      value: 4,
+      branchOrder:2
     }
   ];
 
   const [branch , setBranch] = useState([]);
   const [role, setRole] = useState(0);
   const [branch_id,setBranch_id] = useState(0);
+  const [branchOrder , setBranchOrder] = useState(1);
 
   useEffect(()=> {
     // update list branch with role change
     if (role > 0 && role < 5) { 
-    axios.get(`${API_URL}/branch?role=${role}`).then((res) => {
+    axios.get(`${API_URL}/branch?role=${role == 5 ? 3 : role == 1 || role == 2 ? 1 : role==3 || role == 4 ? 2 : 1}`).then((res) => {
       if (res.status === 200) {
         setBranch(res.data.data);
       }
@@ -115,7 +121,7 @@ implement it later
               <Form.Group className="mb-3" controlId="role">
                 <Form.Label>Select Role</Form.Label>
                 <Form.Select aria-label="Default select example" name="role" required={true} onChange={(e)=>{
-                  setRole(e.target.value)
+                  setRole(e.target.value);
                 }}>
                 <option></option>
                 {allRoles.map((role, index) => (

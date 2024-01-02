@@ -110,6 +110,11 @@ export const DashboardMenu = [
   },
   {
     id: uuid(),
+    title: "list import",
+    link : "/pages/import",
+  },
+  {
+    id: uuid(),
     title: "Pages",
     icon: "layers",
     children: [
