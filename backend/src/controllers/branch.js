@@ -44,7 +44,7 @@ const updateBranch = ErrorWrapperHandler(async (req, res, next) => {
 
 const deleteBranch = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const id = req.query.deleteBranchId
+        const id = req.query.id
         const token = req.headers.authorization.split(' ')[1];
         const data = await branchService.deleteBranch(token, id);
         return res.status(StatusCodes.OK).json({

@@ -92,7 +92,7 @@ const deleteBranch = async (token, id) => {
         throw err
     }
 
-    let branch = getBranchById(id)
+    let branch = await getBranchById(id)
     if (id == null || branch == null) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
