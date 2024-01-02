@@ -39,8 +39,6 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
         const branch_id = req.body.branch_id
         const name = req.body.name
         const token = req.headers.authorization.split(' ')[1];
-        console.log(token);
-        console.log(req.headers.authorization);
         const data = await authService.createUser(token, username, role, branch_id, name)
         return res.status(StatusCodes.OK).json({
             message: data.message
@@ -59,7 +57,7 @@ const createUser = ErrorWrapperHandler(async (req, res, next) => {
 const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
     try {
         const delete_user_id = req.body.deleteUserId
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await authService.deleteUser(token, delete_user_id)
         return res.status(StatusCodes.OK).json({
             message: data.message
@@ -76,7 +74,7 @@ const deleteUser = ErrorWrapperHandler(async (req, res, next) => {
 
 const getUsers = ErrorWrapperHandler(async (req, res, next) => {
     try {
-        const token = req.cookies.access_token
+        const token = req.headers.authorization.split(' ')[1];
         const data = await authService.getUsers(token)
         return res.status(StatusCodes.OK).json({
             data: data

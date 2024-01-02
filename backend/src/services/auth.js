@@ -154,21 +154,20 @@ const getUsersByBranchId = async (branch_id) => {
 
     return await db.User.findAll({
         where: {
-            branch_id: branch_id,
-            is_unused: false,
+            branch_id: branch_id
         },
+        order: [
+            ['is_unused', 'ASC'],
+        ],
     })
 }
 
 const getAllUsers = async () => {
 
     return await db.User.findAll({
-        where: {
-            is_unused: false,
-        },
-    }, {
         order: [
             ['branch_id', 'ASC'],
+            ['is_unused', 'ASC'],
         ],
     })
 }
@@ -177,5 +176,7 @@ module.exports = {
     createUser,
     login,
     deleteUser,
-    getUsers
+    getUsers,
+    getUserById,
+    getUsersByBranchId
 }
