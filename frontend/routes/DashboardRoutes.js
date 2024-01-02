@@ -88,6 +88,17 @@ export const DashboardMenu = [
   },
   {
     id: uuid(),
+    title : "list branch",
+    icon : "home",
+    link: "/pages/brands/listbranch",
+  },
+  {
+    id:uuid(),
+    title : "create branch",
+    link : "/pages/brands/createbrands",
+  },
+  {
+    id: uuid(),
     title: "LAYOUTS & PAGES",
     grouptitle: true,
   },
