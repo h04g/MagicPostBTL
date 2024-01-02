@@ -37,6 +37,7 @@ const createBranch = async (token, role, address) => {
     return await db.Branch.create({
         role: role,
         address: address,
+        is_unused: false
     })
 }
 

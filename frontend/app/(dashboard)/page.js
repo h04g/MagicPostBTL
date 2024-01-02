@@ -13,6 +13,9 @@ import { ActiveProjects, Teams, TasksPerformance } from "sub-components";
 // import required data files
 import ProjectsStatsData from "data/dashboard/ProjectsStatsData";
 
+import { useState,useEffect } from "react";
+
+
 const Home = () => {
   return (
     <Fragment>
@@ -27,8 +30,8 @@ const Home = () => {
                   <h3 className="mb-0  text-white">MagicPost</h3>
                 </div>
                 <div>
-                  <Link href="#" className="btn btn-white">
-                    Tạo Đơn Hàng
+                  <Link href="/pages/createorder" className="btn btn-white">
+                    Tạo Đơn Hàng ABC
                   </Link>
                 </div>
               </div>

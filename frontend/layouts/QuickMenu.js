@@ -117,8 +117,11 @@ const QuickMenu = () => {
               </div>
               <div className=" dropdown-divider mt-3 mb-2"></div>
             </Dropdown.Item>
-            <Dropdown.Item>
-              <i className="fe fe-power me-2"></i>Đăng xuất
+            <Dropdown.Item onClick={()=>{
+                localStorage.removeItem("token");
+                window.location.href="/authentication/sign-in"
+              }}>
+              <i className="fe fe-power me-2" ></i>Đăng xuất
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

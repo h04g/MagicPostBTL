@@ -82,6 +82,12 @@ export const DashboardMenu = [
   },
   {
     id: uuid(),
+    title: "create new Order",
+    icon : "shopping-cart",
+    link: "/pages/createorder",
+  },
+  {
+    id: uuid(),
     title: "LAYOUTS & PAGES",
     grouptitle: true,
   },

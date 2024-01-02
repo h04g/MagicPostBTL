@@ -9,7 +9,7 @@ const ROLE_TRANSIT_POINT_STAFF = 4;
 const ROLE_CUSTOMER = 0;
 const ROLE_TRANSACTION_POINT = 1;
 const ROLE_TRANSIT_POINT = 2;
-const ROLE_HEADQUARTERS = 3
+const ROLE_HEADQUARTERS = 3;
 
 //Chuyển hoàn ngay
 const IWGCNBA_1 = 1;

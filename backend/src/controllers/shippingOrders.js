@@ -24,6 +24,7 @@ const createShippingOrders = ErrorWrapperHandler(async (req, res, next) => {
         const cod = req.body.cod
         const receiver_other_revenue = req.body.receiver_other_revenue
         const token = req.headers.authorization.split(' ')[1];
+
         const data = await shippingOrdersService.createShippingOrders(token, sender_name, sender_address, sender_phone_number, 
             receiver_name, receiver_address, receiver_phone_number, receiver_postal_id, product_type, exceptional_service, iwgcnba, 
             weigh, convert_weigh, node, main_charge, surcharge, expenses_gygt, other_revenue, cod, receiver_other_revenue)
