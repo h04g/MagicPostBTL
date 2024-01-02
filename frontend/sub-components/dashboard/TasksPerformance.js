@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const Charts = () => {
-  const perfomanceChartSeries = [100, 78, 89];
+  const perfomanceChartSeries = [100, 63, 41];
   const perfomanceChartOptions = {
     dataLabels: { enabled: !1 },
     labels: ["Direct", "Referral", "Organic"],
@@ -101,17 +101,17 @@ const Charts = () => {
         <div className="d-flex align-items-center justify-content-around">
           <div className="text-center">
             <i className="fe fe-check-circle text-success fs-3"></i>
-            <h1 className="mt-3  mb-1 fw-bold">76%</h1>
+            <h1 className="mt-3  mb-1 fw-bold">66%</h1>
             <p>Đã giao</p>
           </div>
           <div className="text-center">
             <i className="fe fe-trending-up text-warning fs-3"></i>
-            <h1 className="mt-3  mb-1 fw-bold">32%</h1>
+            <h1 className="mt-3  mb-1 fw-bold">23%</h1>
             <p>Đang giao</p>
           </div>
           <div className="text-center">
             <i className="fe fe-trending-down text-danger fs-3"></i>
-            <h1 className="mt-3  mb-1 fw-bold">13%</h1>
+            <h1 className="mt-3  mb-1 fw-bold">11%</h1>
             <p>Đã hủy</p>
           </div>
         </div>
