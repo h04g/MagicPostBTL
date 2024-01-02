@@ -1,0 +1,165 @@
+"use client";
+// import node module libraries
+// import node module libraries
+import { Fragment } from "react";
+import Link from "next/link";
+import { ProgressBar, Col, Row, Card, Table, Image, Form ,Button ,Modal ,Container } from "react-bootstrap";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+  } from '@tanstack/react-query'
+
+// import required data files
+import ActiveProjectsData from "data/dashboard/ActiveProjectsData";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API_URL } from "api";
+import useMounted from 'hooks/useMounted';
+import listBranch from "app/(dashboard)/pages/brands/listbranch/page";
+
+export const getListImport  =  async () =>{
+    let token = localStorage.getItem('token');
+    return await axios.get(`${API_URL}/shippingOrders/import`,{
+      headers:{
+          'Content-Type': 'application/json', // Common header for JSON data
+          'Authorization': `Bearer ${token}`
+      }
+      });
+  }
+  
+const Import = () => {
+
+    const [show, setShow] = useState(false);
+    const handleShow = (id) => {setIdExport(id); setShow(true);};
+      const [status,setStatus] = useState(2);
+      const hasMounted = useMounted();
+  const queryClient = useQueryClient();
+  const query = useQuery({ queryKey: ['order', status], queryFn: () => getListOrder(status) });
+  const [roleBranch,setRoleBranch] = useState(0);
+  const [branchDetail ,setBranchDetail] = useState([]);
+  const [branchId,setBranchId] = useState(0);
+  const [idExport,setIdExport] = useState(null);
+  const [showModelStatus,setShowModelStatus] = useState(false);
+  const [updateStatus,setUpdateStatus] = useState(null);
+  
+  const handleClose = () => {setShow(false);setShowModelStatus(false)};
+  
+  const handleImport = (id) => {
+    let token = localStorage.getItem('token');
+    if (!token ) {
+      return; 
+    }
+    axios.post(`${API_URL}/shippingOrders/import?id=${id}`
+    ,{
+      "id" :id
+    },{
+      headers:{
+      'Content-Type': 'application/json', // Common header for JSON data
+      'Authorization': `Bearer ${token}`
+      }
+    }).then((res)=>{
+      if (res.status == 200) {
+        alert('Import successs');
+        window.location.reload();
+      }
+  
+    });
+  }
+
+    const listImport = useQuery({ queryKey: ['listImport', branchId], queryFn: () => getListImport() });
+
+
+    const shippingOrderStatus = [
+        {
+          value : 2,
+          label : "Shiping orders transporting"
+        },
+        {
+          value : 3,
+          label : "Shipping orders delivered"
+        },
+        {
+          value : 5,
+          label : "Shipping orders refunding"
+        },
+        {
+          value : 6,
+          label : "Shipping orders refunded"
+        }
+      ];
+  return (
+    <Fragment>
+      <div className="bg-primary pt-10 pb-21"></div>
+      <Container fluid className="mt-n22 px-6">
+        {/* Active Projects  */}
+        {
+        listImport.isLoading ?
+        <div>Is Loading</div>
+      :listImport.error ? 
+      <div>ERROR</div>
+      :
+      <Card>
+      <Card.Header className="bg-white  py-4">
+            <h4 className="mb-0">Chi tiết đơn hàng den</h4>
+          </Card.Header>
+      <Table responsive className="text-nowrap mb-0">
+            <thead className="table-light">
+              <tr>
+            <th>Đơn hàng</th>
+            <th>Ngày gửi</th>
+            <th>Tình trạng</th>
+           <th>tổng giá vé</th>
+          <th>Tổng doanh thu</th>
+              <th>cập nhật</th>
+            <th>phi vat</th>
+  <th>trong luong</th>
+  <th>action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listImport.data.data.data.map((item, index) => {
+                return (
+                  <tr key={item.id}>
+                    <td className="align-middle">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          {item.id}
+                        </div>
+                        <div className="ms-3 lh-1">
+                          <h5 className=" mb-1">
+                            <Link href="#" className="text-inherit">
+                              {item.projectName}
+                            </Link>
+                          </h5>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="align-middle" >{new Date(item.createdAt).toLocaleString('en-GB') }</td>
+                    <td className="align-middle" >                  
+                    {item.status == 2 ?  "Shiping orders transporting" : item.status == 3 ? "Shipping orders delivered" : item.status == 5 ? "Shipping orders refunding" : item.status == 6 ? "Shipping orders refunded": "" }
+                 </td>
+                    <td>{item.total_fare}</td>
+                    <td>{item.total_revenue}</td>
+                    <td>{item.updatedAt}</td>
+                    <td>{item.vat_fee}</td>
+                    <td>{item.weigh}</td>
+                    <td>
+                    <Button variant="success" size="g" onClick={()=>{handleImport(item.id)}}>Import</Button>
+                    </td>
+                  </tr>
+                );
+              })}
+              
+            </tbody>
+          </Table>
+          </Card>
+}
+
+      </Container>
+    </Fragment>
+  );
+};
+export default Import;
