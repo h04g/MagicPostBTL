@@ -156,13 +156,25 @@ const updateStatus = async (token, id, status) => {
         err.message = 'ShippingOrder does not exist'
         throw err
     }
-    if (status <= shippingOrder.status) {
+    if (status <= shippingOrder.status || shippingOrder.status == SHIPPING_ORDERS_DELIVERED || shippingOrder.status == SHIPPING_ORDERS_REFUNDED) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Cannot update status'
         throw err
     }
     if (status == SHIPPING_ORDERS_REFUNDED || status == SHIPPING_ORDERS_DELIVERED) {
+        if(status == SHIPPING_ORDERS_REFUNDED && shippingOrder.sender_postal_id != user.branch_id){
+            let err = new Error()
+            err.code = StatusCodes.BAD_REQUEST
+            err.message = 'Cannot update status'
+            throw err
+        }
+        if(status == SHIPPING_ORDERS_DELIVERED && shippingOrder.receiver_postal_id != user.branch_id){
+            let err = new Error()
+            err.code = StatusCodes.BAD_REQUEST
+            err.message = 'Cannot update status'
+            throw err
+        }
         await db.ShippingOrders.update({ status: status, staff_id: user.id, delivery_time: new Date() }, {
             where: {
                 id: id,
@@ -250,6 +262,33 @@ const getShippingOrdersByBrandhIdAndStatus = async (token, status) => {
     return data
 }
 
+const getImportShippingOrders = async (token) => {
+
+    const user = decodeToken(token)
+    if (user == null) {
+        let err = new Error()
+        err.code = StatusCodes.UNAUTHORIZED
+        err.message = 'Invalid token'
+        throw err
+    }
+
+    const shippingOrders = await db.Transport.findAll({
+        where: {
+            receiving_branch_id: user.branch_id,
+        },
+        order: [
+            ['export_time', 'DESC'],
+        ]
+    })
+    const shippingOrdersId = shippingOrders.map(shippingOrder => shippingOrder.shipping_order_id);
+    let data = await db.ShippingOrders.findAll({
+        where: {
+            id: shippingOrdersId,
+        },
+    });
+    return data
+}
+
 function isPhoneNumber(input) {
     var phoneNumberPattern = /^0\d{9}$/;
     return phoneNumberPattern.test(input);
@@ -259,5 +298,6 @@ module.exports = {
     createShippingOrders,
     updateStatus,
     getShippingOrdersById,
-    getShippingOrdersByBrandhIdAndStatus
+    getShippingOrdersByBrandhIdAndStatus,
+    getImportShippingOrders
 }
