@@ -2,7 +2,6 @@ const { StatusCodes } = require('http-status-codes')
 
 const { db } = require('../models')
 const { ROLE_ADMIN, ROLE_TRANSACTION_POINT, ROLE_TRANSIT_POINT, ROLE_CUSTOMER, ROLE_HEADQUARTERS } = require('../utils/constant')
-const { getShippingOrdersById } = require('./shippingOrders')
 const { decodeToken } = require('../utils/jwt')
 const { getBranchById } = require('./branch')
 
@@ -15,7 +14,8 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
         throw err
     }
 
-    const shippingOrder = await getShippingOrdersById(id)
+    const shippingOrder = await db.ShippingOrders.findByPk(id)
+    console.log(id);
     if (shippingOrder == null) {
         let err = new Error()
         err.code = StatusCodes.NOT_FOUND
@@ -23,8 +23,8 @@ const exportShippingOrders = async (token, id, receiving_branch_id) => {
         throw err
     }
 
-    let receiving_branch = getBranchById(receiving_branch_id)
-    if (id == null || receiving_branch == null) {
+    let receiving_branch = await getBranchById(receiving_branch_id)
+    if (id == null || receiving_branch == null || receiving_branch_id == user.branch_id) {
         let err = new Error()
         err.code = StatusCodes.BAD_REQUEST
         err.message = 'Invalid data'
@@ -80,7 +80,7 @@ const importShippingOrders = async (token, id) => {
         throw err
     }
 
-    const shippingOrder = await getShippingOrdersById(id)
+    const shippingOrder = await db.ShippingOrders.findByPk(id)
     if (shippingOrder == null) {
         let err = new Error()
         err.code = StatusCodes.NOT_FOUND
