@@ -30,7 +30,6 @@ export const getListOrder = async (status=2) =>{
 
 const ActiveProjects = () => {
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
   const handleShow = (id) => {setIdExport(id); setShow(true);};
     const [status,setStatus] = useState(2);
     const hasMounted = useMounted();
@@ -40,9 +39,56 @@ const [roleBranch,setRoleBranch] = useState(0);
 const [branchDetail ,setBranchDetail] = useState([]);
 const [branchId,setBranchId] = useState(null);
 const [idExport,setIdExport] = useState(null);
+const [showModelStatus,setShowModelStatus] = useState(false);
+const [updateStatus,setUpdateStatus] = useState(null);
+
+const handleClose = () => {setShow(false);setShowModelStatus(false)};
 
 
-const handleUpdateStatus = () =>{ }
+const handleUpdateStatus = () => {
+  setShowModelStatus(false);
+  let token = localStorage.getItem('token');
+  if (!token ) {
+    return; 
+  }
+  axios.post(`${API_URL}/shippingOrders/updateStatus?id=${idExport}`
+  ,{
+    "status" : parseInt(updateStatus)
+  },{
+    headers:{
+    'Content-Type': 'application/json', // Common header for JSON data
+    'Authorization': `Bearer ${token}`
+    }
+  }).then((res)=>{
+    if (res.status == 200) {
+      alert('Update successs');
+    }
+
+  });
+}
+
+const handleOpenStatusModal = (id) =>{
+  setShowModelStatus(true);
+  setIdExport(id);
+  // let token = localStorage.getItem('token');
+  // if (!token ) {
+  //   return; 
+  // }
+  // axios.post(`${API_URL}/shippingOrders/updateStatus?id=${id}`
+  // ,{
+  //   "status" : parseInt(status)
+  // },{
+  //   headers:{
+  //   'Content-Type': 'application/json', // Common header for JSON data
+  //   'Authorization': `Bearer ${token}`
+  //   }
+  // }).then((res)=>{
+  //   if (res.status == 200) {
+  //     alert('Update successs');
+  //   }
+
+  // });
+ }
 const handleExport = (e) => {
 
   if (idExport == null) {
@@ -174,7 +220,7 @@ return <div>error</div>
                     <td>{item.vat_fee}</td>
                     <td>{item.weigh}</td>
                     <td>
-                    <Button variant="primary" size="g" onClick={handleUpdateStatus}>Update Status</Button>
+                    <Button variant="primary" size="g" onClick={ ()=>{handleOpenStatusModal(item.id)}}>Update Status</Button>
                     <Button variant="success" size="g" onClick={()=>{handleShow(item.id)}}>Export</Button>
                     </td>
                   </tr>
@@ -219,6 +265,39 @@ return <div>error</div>
             Close
           </Button>
           <Button variant="primary" onClick={handleExport}>
+            Export
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showModelStatus} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Export</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Label>chon tinh trang</Form.Label>
+            <Form.Select onChange={(e)=>{
+              // setRoleBranch(e.target.value);
+              // fetchListBranch(e.target.value);
+              setUpdateStatus(e.target.value);
+
+            }}
+            >
+              <option></option>
+              {/* <option value = {1}>Transaction Point</option>
+              <option value ={2} >Transit Point</option>
+              <option value ={3} >Head Quater</option> */}
+              {shippingOrderStatus.map((item)=>{
+                return <option value={item.value} >{item.label}</option>
+              })}
+            </Form.Select>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleUpdateStatus}>
             Export
           </Button>
         </Modal.Footer>
